@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rohit Ragde — Senior Data Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f0f0f;
+  --ink-dim: #555;
+  --ink-light: #999;
+  --paper: #fafaf7;
+  --paper-2: #f2f1ec;
+  --paper-3: #e8e6de;
+  --accent: #1a6b5a;
+  --accent-2: #d4a853;
+  --border: rgba(15,15,15,0.1);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease, width 0.2s, height 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.08s ease, width 0.2s, height 0.2s, opacity 0.2s;
+  transform: translate(-50%, -50%);
+  opacity: 0.5;
+}
+
+body:hover .cursor { opacity: 1; }
+
+/* ── MAGNETIC TILT CARDS ── */
+.tilt-card {
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transform-style: preserve-3d;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 4rem;
+  background: rgba(250,250,247,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 18px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-dim);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.nav-cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 5rem;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 4rem 4rem 4rem;
+  border-right: 1px solid var(--border);
+}
+
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-tag::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(52px, 6vw, 80px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+
+.hero-name em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin-bottom: 2rem;
+  letter-spacing: 0.03em;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--ink-dim);
+  line-height: 1.8;
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: 1.5px solid var(--border);
+  color: var(--ink-dim);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
+  gap: 1px;
+  background: var(--paper-3);
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.8rem 2rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.stat-row:hover {
+  background: var(--paper-2);
+  transform: translateX(4px);
+}
+
+.stat-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 42px;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 80px;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stat-sublabel {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-light);
+  letter-spacing: 0.04em;
+}
+
+/* ── SECTION LAYOUT ── */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 4rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-light);
+  letter-spacing: 0.1em;
+}
+
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ── EXPERIENCE ── */
+#experience { background: var(--paper); }
+
+.exp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.exp-item {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: background 0.2s;
+}
+
+.exp-item::before {
+  content: '';
+  position: absolute;
+  left: -4rem;
+  top: 0; bottom: 0;
+  width: 3px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.exp-item:hover::before { background: var(--accent); }
+
+.exp-left {
+  padding-top: 4px;
+}
+
+.exp-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-light);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.exp-location {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-light);
+}
+
+.exp-company {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.exp-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.exp-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exp-bullets li {
+  font-size: 14px;
+  color: var(--ink-dim);
+  padding-left: 1.2rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.exp-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 11px;
+  top: 3px;
+}
+
+/* ── PROJECTS ── */
+#projects { background: var(--paper-2); }
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.proj-card {
+  background: var(--paper);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+
+.proj-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.proj-card:hover { background: var(--paper-2); }
+.proj-card:hover::after { transform: scaleX(1); }
+
+.proj-card.featured {
+  grid-column: span 2;
+}
+
+.proj-card.featured::after { transform: scaleX(1); background: var(--accent-2); }
+
+.proj-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-light);
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+
+.proj-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+}
+
+.proj-desc {
+  font-size: 13px;
+  color: var(--ink-dim);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.proj-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  color: var(--ink-dim);
+  letter-spacing: 0.04em;
+}
+
+.tag.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.proj-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  letter-spacing: 0.06em;
+}
+
+.status-live { border: 1px solid var(--accent); color: var(--accent); }
+.status-building { border: 1px solid var(--accent-2); color: var(--accent-2); }
+
+.proj-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.proj-link:hover { color: var(--accent); }
+
+/* ── SKILLS ── */
+#skills { background: var(--paper); }
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.skill-group {
+  background: var(--paper);
+  padding: 1.5rem;
+  transition: background 0.2s;
+}
+
+.skill-group:hover { background: var(--paper-2); }
+
+.skill-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-item {
+  font-size: 13px;
+  color: var(--ink);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-item:last-child { border-bottom: none; }
+
+.skill-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── CONTACT ── */
+#contact { background: var(--ink); color: var(--paper); }
+
+#contact .section-title { color: var(--paper); }
+#contact .section-num { color: rgba(255,255,255,0.3); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.contact-heading {
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--paper);
+}
+
+.contact-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: color 0.2s, padding-left 0.2s;
+}
+
+.contact-link:hover {
+  color: var(--paper);
+  padding-left: 8px;
+}
+
+.contact-link-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 1.5rem 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+
+.footer-accent { color: var(--accent); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  overflow: hidden;
+  background: var(--accent);
+  padding: 10px 0;
+  white-space: nowrap;
+}
+
+.ticker {
+  display: inline-flex;
+  animation: ticker 20s linear infinite;
+}
+
+.ticker-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: white;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 2rem;
+  opacity: 0.8;
+}
+
+.ticker-item::after {
+  content: '·';
+  margin-left: 2rem;
+  opacity: 0.4;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── CERT STRIP ── */
+.cert-strip {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+
+.cert-item {
+  background: var(--paper);
+  padding: 1.2rem 1.5rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.cert-item:hover { background: var(--paper-2); }
+
+.cert-icon {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.cert-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.cert-org {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-light);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .section { padding: 4rem 1.5rem; }
+  .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .proj-card.featured { grid-column: span 1; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Rohit Ragde</div>
+  <ul class="nav-links">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:rohit.ragde.de@gmail.com" class="nav-cta">Hire Me →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Available for Senior DE roles</div>
+    <h1 class="hero-name">Rohit<br><em>Ragde</em></h1>
+    <div class="hero-role">senior_data_engineer · 6+ years · philadelphia, pa</div>
+    <p class="hero-desc">
+      I architect data pipelines that power business decisions at scale — PySpark, dbt, Airflow, Snowflake, Databricks. Financial services, utilities, telecom. Building real-time streaming and GenAI data systems. Open to relocation and remote.
+    </p>
+    <div class="hero-actions">
+      <a href="mailto:rohit.ragde.de@gmail.com" class="btn-primary">Get in Touch →</a>
+      <a href="https://linkedin.com/in/rohitaragde" class="btn-ghost" target="_blank">LinkedIn ↗</a>
+      <a href="https://github.com/rohitaragde" class="btn-ghost" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-row reveal">
+      <div class="stat-num">6+</div>
+      <div class="stat-info">
+        <div class="stat-label">Years of Experience</div>
+        <div class="stat-sublabel">TD Bank · Exelon · Teradata · Cantonica</div>
+      </div>
+    </div>
+    <div class="stat-row reveal">
+      <div class="stat-num">15+</div>
+      <div class="stat-info">
+        <div class="stat-label">Source Systems Integrated</div>
+        <div class="stat-sublabel">Financial data pipelines at enterprise scale</div>
+      </div>
+    </div>
+    <div class="stat-row reveal">
+      <div class="stat-num">40+</div>
+      <div class="stat-info">
+        <div class="stat-label">Hours Saved Monthly</div>
+        <div class="stat-sublabel">Automated reconciliation workflows</div>
+      </div>
+    </div>
+    <div class="stat-row reveal">
+      <div class="stat-num">10M+</div>
+      <div class="stat-info">
+        <div class="stat-label">Records Processed Daily</div>
+        <div class="stat-sublabel">Real-time pipelines at Teradata</div>
+      </div>
+    </div>
+    <div class="stat-row reveal">
+      <div class="stat-num">4</div>
+      <div class="stat-info">
+        <div class="stat-label">Live Portfolio Projects</div>
+        <div class="stat-sublabel">Kafka · Delta Lake · dbt · Claude API</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">PySpark</span>
+    <span class="ticker-item">Apache Kafka</span>
+    <span class="ticker-item">Delta Lake</span>
+    <span class="ticker-item">dbt</span>
+    <span class="ticker-item">Apache Airflow</span>
+    <span class="ticker-item">Snowflake</span>
+    <span class="ticker-item">Azure Databricks</span>
+    <span class="ticker-item">AWS S3</span>
+    <span class="ticker-item">Python</span>
+    <span class="ticker-item">SQL Expert</span>
+    <span class="ticker-item">Claude API</span>
+    <span class="ticker-item">Great Expectations</span>
+    <span class="ticker-item">GitHub Actions</span>
+    <span class="ticker-item">Docker</span>
+    <span class="ticker-item">PySpark</span>
+    <span class="ticker-item">Apache Kafka</span>
+    <span class="ticker-item">Delta Lake</span>
+    <span class="ticker-item">dbt</span>
+    <span class="ticker-item">Apache Airflow</span>
+    <span class="ticker-item">Snowflake</span>
+    <span class="ticker-item">Azure Databricks</span>
+    <span class="ticker-item">AWS S3</span>
+    <span class="ticker-item">Python</span>
+    <span class="ticker-item">SQL Expert</span>
+    <span class="ticker-item">Claude API</span>
+    <span class="ticker-item">Great Expectations</span>
+    <span class="ticker-item">GitHub Actions</span>
+    <span class="ticker-item">Docker</span>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Experience</h2>
+    </div>
+    <div class="exp-grid">
+
+      <div class="exp-item reveal tilt-card">
+        <div class="exp-left">
+          <div class="exp-date">Oct 2025 — Present</div>
+          <div class="exp-location">Philadelphia, PA</div>
+        </div>
+        <div>
+          <div class="exp-company">TD Bank</div>
+          <div class="exp-role">Senior Data Engineer — Financial Data & Regulatory Reporting</div>
+          <ul class="exp-bullets">
+            <li>Architected SQL pipelines integrating 15+ source systems powering AML analytics and SOX-compliant regulatory reporting at one of Canada's largest banks</li>
+            <li>Engineered 30+ automated data quality frameworks — reducing data incidents by 40% and ensuring audit-ready reporting</li>
+            <li>Built Power BI dashboards tracking 20+ financial KPIs consumed daily by finance leadership</li>
+            <li>Automated reconciliation workflows saving 40+ hours/month across financial reporting systems</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal tilt-card">
+        <div class="exp-left">
+          <div class="exp-date">Sep 2024 — Sep 2025</div>
+          <div class="exp-location">Philadelphia, PA</div>
+        </div>
+        <div>
+          <div class="exp-company">Cantonica</div>
+          <div class="exp-role">Data Engineer — Data Platform & Analytics</div>
+          <ul class="exp-bullets">
+            <li>Built end-to-end pipelines using Snowflake and dbt with dimensional models reducing data preparation time 30%</li>
+            <li>Optimized SQL queries and schema design improving processing performance by 25%</li>
+            <li>Integrated data pipelines with Django backend via REST APIs and MongoDB for real-time product features</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal tilt-card">
+        <div class="exp-left">
+          <div class="exp-date">Jun 2023 — Dec 2023</div>
+          <div class="exp-location">Wilmington, DE</div>
+        </div>
+        <div>
+          <div class="exp-company">Exelon</div>
+          <div class="exp-role">Data Engineer — Advanced Data Analytics</div>
+          <ul class="exp-bullets">
+            <li>Built PySpark pipelines on Azure Databricks processing 15+ TB daily with 95% SLA reliability</li>
+            <li>Reduced critical pipeline execution time by 30% through bottleneck identification</li>
+            <li>Engineered Azure Data Factory workflows reducing data latency by 45% across on-prem to cloud migration</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal tilt-card">
+        <div class="exp-left">
+          <div class="exp-date">Sep 2019 — Aug 2022</div>
+          <div class="exp-location">Mumbai, India</div>
+        </div>
+        <div>
+          <div class="exp-company">Teradata</div>
+          <div class="exp-role">Data Integration Engineer · Audi · Bank of Ireland · Volkswagen</div>
+          <ul class="exp-bullets">
+            <li>Led SLIPSTREAM — automated ELT pipeline processing 10M+ subscriber records daily with 95% reliability</li>
+            <li>Optimized 100+ complex SQL queries transforming response times from minutes to seconds</li>
+            <li>Built 40+ Python/Bash automation scripts reducing mean time to resolution from hours to minutes</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Certifications -->
+    <div class="cert-strip reveal">
+      <div class="cert-item">
+        <div class="cert-icon">DB</div>
+        <div>
+          <div class="cert-name">Databricks Certified Data Engineer Associate</div>
+          <div class="cert-org">In progress · Target Aug 2026</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">TD</div>
+        <div>
+          <div class="cert-name">Teradata Vantage Certified Administrator</div>
+          <div class="cert-org">Teradata · Jun 2021</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">TD</div>
+        <div>
+          <div class="cert-name">Teradata Vantage Certified SQL Associate</div>
+          <div class="cert-org">Teradata · Mar 2021</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">OC</div>
+        <div>
+          <div class="cert-name">Oracle SQL 1Z0-071 Certified Associate</div>
+          <div class="cert-org">Oracle · Aug 2018</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Projects</h2>
+    </div>
+    <div class="projects-grid">
+
+      <div class="proj-card featured reveal tilt-card">
+        <div class="proj-num">01 // featured</div>
+        <h3 class="proj-title">Real-Time Financial Fraud Detection Pipeline</h3>
+        <p class="proj-desc">End-to-end streaming pipeline simulating a production banking environment. Kafka producer generates 10k+ synthetic transactions/minute. PySpark Structured Streaming processes with fraud detection logic. Delta Lake stores with ACID guarantees across Bronze/Silver/Gold medallion architecture.</p>
+        <div class="proj-tags">
+          <span class="tag accent">Apache Kafka</span>
+          <span class="tag accent">PySpark Streaming</span>
+          <span class="tag accent">Delta Lake</span>
+          <span class="tag">Great Expectations</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Python</span>
+        </div>
+        <div class="proj-footer">
+          <span class="status status-building">Building</span>
+          <a href="https://github.com/rohitaragde/fraud-detection-pipeline" class="proj-link" target="_blank">github ↗</a>
+        </div>
+      </div>
+
+      <div class="proj-card reveal tilt-card">
+        <div class="proj-num">02</div>
+        <h3 class="proj-title">AI Agent Orchestration System</h3>
+        <p class="proj-desc">Production-grade multi-agent AI system using Claude API. 6 specialized agents with multi-turn conversational workflows, real-time API data retrieval, and automated pipeline orchestration.</p>
+        <div class="proj-tags">
+          <span class="tag accent">Claude API</span>
+          <span class="tag accent">Prompt Engineering</span>
+          <span class="tag">Python</span>
+          <span class="tag">SQLite</span>
+        </div>
+        <div class="proj-footer">
+          <span class="status status-live">Live</span>
+          <a href="https://github.com/rohitaragde" class="proj-link" target="_blank">github ↗</a>
+        </div>
+      </div>
+
+      <div class="proj-card reveal tilt-card">
+        <div class="proj-num">03</div>
+        <h3 class="proj-title">Financial Transactions dbt Pipeline</h3>
+        <p class="proj-desc">Complete analytics engineering stack — dbt staging, intermediate, and mart models with automated test suite, data lineage documentation, and DuckDB/Snowflake compatibility.</p>
+        <div class="proj-tags">
+          <span class="tag accent">dbt</span>
+          <span class="tag accent">Snowflake</span>
+          <span class="tag">DuckDB</span>
+          <span class="tag">Data Quality</span>
+        </div>
+        <div class="proj-footer">
+          <span class="status status-live">Live</span>
+          <a href="https://github.com/rohitaragde" class="proj-link" target="_blank">github ↗</a>
+        </div>
+      </div>
+
+      <div class="proj-card reveal tilt-card">
+        <div class="proj-num">04</div>
+        <h3 class="proj-title">NYC Taxi — Medallion Architecture</h3>
+        <p class="proj-desc">Bronze/Silver/Gold medallion pipeline on Apache Spark processing high-volume NYC taxi datasets. Incremental ingestion, partitioning strategies, and schema enforcement.</p>
+        <div class="proj-tags">
+          <span class="tag accent">Apache Spark</span>
+          <span class="tag accent">Delta Lake</span>
+          <span class="tag">Medallion</span>
+          <span class="tag">Incremental Load</span>
+        </div>
+        <div class="proj-footer">
+          <span class="status status-live">Live</span>
+          <a href="https://github.com/rohitaragde" class="proj-link" target="_blank">github ↗</a>
+        </div>
+      </div>
+
+      <div class="proj-card reveal tilt-card">
+        <div class="proj-num">05</div>
+        <h3 class="proj-title">Parquet Storage Internals Demo</h3>
+        <p class="proj-desc">Hands-on proof of Parquet columnar compression (7.1x smaller), column pruning (10.9x faster reads at 1M rows), and predicate pushdown on real transaction datasets.</p>
+        <div class="proj-tags">
+          <span class="tag accent">PyArrow</span>
+          <span class="tag accent">Parquet</span>
+          <span class="tag">PySpark</span>
+          <span class="tag">Performance</span>
+        </div>
+        <div class="proj-footer">
+          <span class="status status-live">Live</span>
+          <a href="https://github.com/rohitaragde" class="proj-link" target="_blank">github ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Technical Skills</h2>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-group">
+        <div class="skill-cat">Languages</div>
+        <div class="skill-item"><span class="skill-dot"></span>Python (Expert)</div>
+        <div class="skill-item"><span class="skill-dot"></span>SQL (Expert)</div>
+        <div class="skill-item"><span class="skill-dot"></span>Bash / Shell</div>
+        <div class="skill-item"><span class="skill-dot"></span>T-SQL / PL/SQL</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Big Data</div>
+        <div class="skill-item"><span class="skill-dot"></span>PySpark / Spark</div>
+        <div class="skill-item"><span class="skill-dot"></span>Apache Kafka</div>
+        <div class="skill-item"><span class="skill-dot"></span>Spark Streaming</div>
+        <div class="skill-item"><span class="skill-dot"></span>Delta Lake</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Cloud & Platforms</div>
+        <div class="skill-item"><span class="skill-dot"></span>Azure Databricks</div>
+        <div class="skill-item"><span class="skill-dot"></span>AWS S3 / Glue</div>
+        <div class="skill-item"><span class="skill-dot"></span>Snowflake</div>
+        <div class="skill-item"><span class="skill-dot"></span>Azure Data Factory</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Orchestration</div>
+        <div class="skill-item"><span class="skill-dot"></span>Apache Airflow</div>
+        <div class="skill-item"><span class="skill-dot"></span>dbt</div>
+        <div class="skill-item"><span class="skill-dot"></span>GitHub Actions</div>
+        <div class="skill-item"><span class="skill-dot"></span>Docker</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Data Quality</div>
+        <div class="skill-item"><span class="skill-dot"></span>Great Expectations</div>
+        <div class="skill-item"><span class="skill-dot"></span>dbt Tests</div>
+        <div class="skill-item"><span class="skill-dot"></span>Data Lineage</div>
+        <div class="skill-item"><span class="skill-dot"></span>SOX / HIPAA / GDPR</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">GenAI & AI Eng</div>
+        <div class="skill-item"><span class="skill-dot"></span>Claude API</div>
+        <div class="skill-item"><span class="skill-dot"></span>Prompt Engineering</div>
+        <div class="skill-item"><span class="skill-dot"></span>Agentic Pipelines</div>
+        <div class="skill-item"><span class="skill-dot"></span>LLM Enrichment</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Databases</div>
+        <div class="skill-item"><span class="skill-dot"></span>PostgreSQL</div>
+        <div class="skill-item"><span class="skill-dot"></span>SQL Server</div>
+        <div class="skill-item"><span class="skill-dot"></span>Teradata</div>
+        <div class="skill-item"><span class="skill-dot"></span>MongoDB</div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-cat">Visualization</div>
+        <div class="skill-item"><span class="skill-dot"></span>Power BI</div>
+        <div class="skill-item"><span class="skill-dot"></span>Tableau</div>
+        <div class="skill-item"><span class="skill-dot"></span>dbt Docs</div>
+        <div class="skill-item"><span class="skill-dot"></span>Excel (Advanced)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:var(--ink)">
+  <div class="section">
+    <div class="section-header reveal" style="border-color:rgba(255,255,255,0.1)">
+      <span class="section-num" style="color:rgba(255,255,255,0.3)">04</span>
+      <h2 class="section-title" style="color:var(--paper)">Let's Build</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <h3 class="contact-heading">Open to<br>Senior DE Roles</h3>
+        <p class="contact-sub">Full-time, contract, W2, C2C. Philadelphia, New York, remote, or relocation. Looking for teams building serious data infrastructure.</p>
+        <a href="mailto:rohit.ragde.de@gmail.com" class="contact-btn">rohit.ragde.de@gmail.com →</a>
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:rohit.ragde.de@gmail.com" class="contact-link">
+          <span class="contact-link-dot"></span>rohit.ragde.de@gmail.com
+        </a>
+        <a href="tel:+12672781779" class="contact-link">
+          <span class="contact-link-dot"></span>+1 (267) 278-1779
+        </a>
+        <a href="https://linkedin.com/in/rohitaragde" class="contact-link" target="_blank">
+          <span class="contact-link-dot"></span>linkedin.com/in/rohitaragde
+        </a>
+        <a href="https://github.com/rohitaragde" class="contact-link" target="_blank">
+          <span class="contact-link-dot"></span>github.com/rohitaragde
+        </a>
+        <a href="https://github.com/rohitaragde/fraud-detection-pipeline" class="contact-link" target="_blank">
+          <span class="contact-link-dot"></span>github.com/rohitaragde/fraud-detection-pipeline
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">rohit annasaheb ragde · <span class="footer-accent">senior data engineer</span> · philadelphia, pa</div>
+  <div class="footer-text">open to relocation & remote · <span class="footer-accent">built with intention</span></div>
+</footer>
+
+<script>
+// ── CUSTOM CURSOR ──────────────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0;
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px';
+  ring.style.top = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// Cursor scale on hover
+document.querySelectorAll('a, button, .stat-row, .proj-card, .skill-group, .exp-item').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+    cursor.style.background = 'var(--accent-2)';
+    ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+    ring.style.opacity = '0.3';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+    cursor.style.background = 'var(--accent)';
+    ring.style.transform = 'translate(-50%, -50%) scale(1)';
+    ring.style.opacity = '0.5';
+  });
+});
+
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── TILT CARDS ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / centerY * -4;
+    const rotateY = (x - centerX) / centerX * 4;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(4px)`;
+    card.style.boxShadow = `${-rotateY * 2}px ${rotateX * 2}px 20px rgba(0,0,0,0.08)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+    card.style.boxShadow = '';
+  });
+});
+
+// ── SMOOTH NAV ─────────────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ── CLICK RIPPLE ───────────────────────────────────────────────────────────
+document.addEventListener('click', e => {
+  const ripple = document.createElement('div');
+  ripple.style.cssText = `
+    position: fixed;
+    left: ${e.clientX}px;
+    top: ${e.clientY}px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  `;
+  document.body.appendChild(ripple);
+  setTimeout(() => {
+    ripple.style.transform = 'translate(-50%, -50%) scale(20)';
+    ripple.style.opacity = '0';
+  }, 10);
+  setTimeout(() => ripple.remove(), 520);
+});
+</script>
+</body>
+</html>
