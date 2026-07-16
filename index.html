@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ── SEO ── -->
+<title>Rohit Ragde — Data Engineer · I make slow queries fast</title>
+<meta name="description" content="Data Engineer with one superpower: database internals and performance. 6 years across financial services, utilities, and telecom — AML pipelines at TD Bank, PySpark, dbt, Airflow, Snowflake. Philadelphia · remote.">
+<link rel="canonical" href="https://rohitaragde.github.io/">
+
+<!-- ── OPEN GRAPH / LINKEDIN UNFURL ── -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rohitaragde.github.io/">
+<meta property="og:title" content="Rohit Ragde — I make slow queries fast">
+<meta property="og:description" content="6 years of data engineering, drawn as a DAG. PySpark · dbt · Airflow · Snowflake · SQL performance tuning.">
+<meta property="og:image" content="https://rohitaragde.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rohit Ragde — I make slow queries fast">
+<meta name="twitter:description" content="6 years of data engineering, drawn as a DAG.">
+<meta name="twitter:image" content="https://rohitaragde.github.io/assets/og.png">
+
+<!-- ── STRUCTURED DATA ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Rohit Annasaheb Ragde",
+  "jobTitle": "Data Engineer",
+  "image": "https://rohitaragde.github.io/assets/profile.jpg",
+  "url": "https://rohitaragde.github.io/",
+  "sameAs": [
+    "https://linkedin.com/in/rohitaragde",
+    "https://github.com/rohitaragde",
+    "https://www.credly.com/users/rohit-ragde"
+  ],
+  "address": { "@type": "PostalAddress", "addressLocality": "Philadelphia", "addressRegion": "PA", "addressCountry": "US" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Drexel University" },
+    { "@type": "CollegeOrUniversity", "name": "University of Mumbai" }
+  ],
+  "knowsAbout": ["Data Engineering", "SQL", "Python", "PySpark", "dbt", "Apache Airflow", "Snowflake", "DuckDB", "Azure Databricks", "ETL"]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #071019;
+  --bg2: #0b1622;
+  --bg3: #101e2d;
+  --panel: #0d1a27;
+  --ink: #e6edf3;
+  --ink2: #a8b6c7;
+  --ink3: #6d7f94;
+  --cyan: #35d0e8;
+  --cyan-dim: #1a8ba0;
+  --cyan-glow: rgba(53,208,232,0.12);
+  --amber: #f0b429;
+  --green: #3fd68f;
+  --border: rgba(120,160,200,0.14);
+  --border-hi: rgba(53,208,232,0.45);
+  --radius: 10px;
+  --sans: 'Archivo', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15.5px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--cyan); color: var(--bg); }
+
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── SUBTLE GRID ── */
+.grid-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(120,160,200,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,160,200,0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+main, nav, footer { position: relative; z-index: 1; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(7,16,25,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+  font-family: var(--mono);
+  font-size: 13px; font-weight: 600;
+  color: var(--ink); text-decoration: none;
+  display: flex; align-items: center; gap: 9px;
+}
+.nav-brand::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.nav-links { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+.nav-links a {
+  font-size: 13px; font-weight: 500; color: var(--ink2);
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+.nav-resume {
+  font-family: var(--mono);
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 18px;
+  background: var(--cyan); color: #04222b;
+  font-size: 12.5px; font-weight: 600;
+  text-decoration: none; border-radius: 7px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.nav-resume:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(53,208,232,0.35); }
+
+/* ── HERO ── */
+.hero {
+  max-width: 1200px; margin: 0 auto;
+  padding: 9.5rem 2.5rem 3rem;
+  text-align: center;
+}
+
+.hero-avatar {
+  display: block;
+  width: 104px; height: 104px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(53,208,232,0.6);
+  box-shadow: 0 0 0 5px rgba(53,208,232,0.12), 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  color: var(--green);
+  padding: 6px 16px;
+  border: 1px solid rgba(63,214,143,0.35);
+  border-radius: 24px;
+  background: rgba(63,214,143,0.07);
+  margin-bottom: 2rem;
+}
+.hero-badge::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.hero h1 {
+  font-size: clamp(38px, 6vw, 76px);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin-bottom: 1.1rem;
+}
+.hero h1 .fast { color: var(--cyan); position: relative; white-space: nowrap; }
+.hero h1 .fast::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 6px;
+  height: 5px; background: var(--cyan-glow);
+  border-bottom: 2px solid var(--cyan);
+}
+
+.hero-sub {
+  font-size: 17px; color: var(--ink2);
+  max-width: 620px; margin: 0 auto 0.6rem;
+}
+.hero-sub strong { color: var(--ink); font-weight: 600; }
+
+.hero-tagline {
+  font-family: var(--mono); font-size: 12.5px; color: var(--ink3);
+  margin-bottom: 2.2rem;
+}
+
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.hero-proof {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink3);
+  margin-top: 1.75rem;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 26px;
+  background: var(--cyan); color: #04222b;
+  font-size: 14px; font-weight: 700;
+  text-decoration: none; border-radius: 8px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(53,208,232,0.35); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 26px;
+  background: transparent; color: var(--ink2);
+  font-size: 14px; font-weight: 600;
+  text-decoration: none; border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: var(--border-hi); color: var(--ink); }
+
+/* ── CAREER DAG (signature element) ── */
+.dag-section {
+  max-width: 1200px; margin: 0 auto;
+  padding: 2rem 2.5rem 1rem;
+}
+
+.dag-hint {
+  font-family: var(--mono); font-size: 12px; color: var(--ink3);
+  text-align: center; margin-bottom: 1rem;
+}
+.dag-hint span { color: var(--cyan); }
+
+.dag-frame {
+  background:
+    radial-gradient(rgba(120,160,200,0.07) 1px, transparent 1px),
+    radial-gradient(ellipse 60% 80% at 50% 20%, rgba(53,208,232,0.06), transparent 70%),
+    linear-gradient(180deg, var(--bg2), var(--panel));
+  background-size: 22px 22px, auto, auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0 0 0.5rem;
+  overflow: hidden;
+}
+.dag-toolbar {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(7,16,25,0.6);
+  font-family: var(--mono); font-size: 11.5px;
+}
+.dag-tb-title { color: var(--ink2); display: inline-flex; align-items: center; gap: 8px; }
+.tb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+.dag-tb-status { color: var(--ink3); }
+.dag-tb-status em { color: var(--green); font-style: normal; }
+.dag-svg-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1.25rem 1rem 0; }
+.dag-status { fill: var(--green); opacity: 0.9; }
+.dag-status.amber-s { fill: var(--amber); }
+.dag-status.pulse { animation: statusPulse 1.6s ease-in-out infinite; }
+@keyframes statusPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .dag-status.pulse { animation: none; } }
+
+.dag-svg-wrap > svg { min-width: 960px; display: block; }
+
+.dag-node { cursor: pointer; }
+.dag-node rect {
+  fill: url(#nodeGrad);
+  stroke: rgba(53,208,232,0.4);
+  stroke-width: 1.25;
+  transition: stroke 0.2s, fill 0.2s, filter 0.2s;
+}
+.dag-node.amber rect { stroke: rgba(240,180,41,0.55); }
+.dag-node.open-node rect { stroke: var(--green); stroke-dasharray: 5 4; }
+.dag-node:hover rect, .dag-node:focus rect {
+  stroke-width: 2; fill: url(#nodeGradHot);
+  filter: drop-shadow(0 0 8px rgba(53,208,232,0.35));
+}
+.dag-node.amber:hover rect, .dag-node.amber:focus rect { filter: drop-shadow(0 0 8px rgba(240,180,41,0.35)); }
+.dag-node.open-node:hover rect, .dag-node.open-node:focus rect { filter: drop-shadow(0 0 8px rgba(63,214,143,0.35)); }
+.dag-node.active rect { stroke: var(--cyan); stroke-width: 2.25; fill: url(#nodeGradHot); filter: drop-shadow(0 0 10px rgba(53,208,232,0.3)); }
+.dag-node.amber.active rect { stroke: var(--amber); filter: drop-shadow(0 0 10px rgba(240,180,41,0.3)); }
+.dag-node.open-node.active rect { stroke: var(--green); filter: drop-shadow(0 0 10px rgba(63,214,143,0.3)); }
+
+.dag-year { font-family: var(--mono); font-size: 10.5px; fill: var(--cyan); font-weight: 600; letter-spacing: 0.06em; }
+.dag-node.amber .dag-year { fill: var(--amber); }
+.dag-node.open-node .dag-year { fill: var(--green); }
+.dag-org { font-family: var(--sans); font-size: 15px; font-weight: 700; fill: var(--ink); }
+.dag-role { font-family: var(--mono); font-size: 10px; fill: var(--ink3); }
+.dag-edge { fill: none; stroke: rgba(53,208,232,0.3); stroke-width: 1.75; transition: stroke 0.2s, stroke-width 0.2s; }
+.dag-edge:not(.open) { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dagDraw 0.7s ease forwards; }
+.dag-edge:not(.open):nth-of-type(2) { animation-delay: 0.15s; }
+.dag-edge:not(.open):nth-of-type(3) { animation-delay: 0.3s; }
+.dag-edge:not(.open):nth-of-type(4) { animation-delay: 0.45s; }
+.dag-edge:not(.open):nth-of-type(5) { animation-delay: 0.6s; }
+@keyframes dagDraw { to { stroke-dashoffset: 0; } }
+.dag-edge.lit { stroke: var(--cyan); stroke-width: 2.5; }
+.dag-edge.open { stroke: rgba(63,214,143,0.6); stroke-dasharray: 5 5; animation: dagFlow 1.2s linear infinite; }
+.dag-edge.open.lit { stroke: var(--green); stroke-width: 2.5; }
+@keyframes dagFlow { to { stroke-dashoffset: -10; } }
+@media (prefers-reduced-motion: reduce) {
+  .dag-edge.open { animation: none; }
+  .dag-edge:not(.open) { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+}
+.dag-edge-arrow { fill: rgba(53,208,232,0.7); }
+.dag-port { fill: var(--cyan); opacity: 0.55; }
+.dag-packet { fill: var(--cyan); opacity: 0.85; filter: drop-shadow(0 0 4px rgba(53,208,232,0.8)); }
+.dag-packet.green { fill: var(--green); filter: drop-shadow(0 0 4px rgba(63,214,143,0.8)); }
+@media (prefers-reduced-motion: reduce) { .dag-packet { display: none; } }
+
+.dag-node { transform-box: fill-box; transform-origin: center; animation: nodeIn 0.55s ease backwards; }
+.dag-node[data-key="oracle"] { animation-delay: 0.05s; }
+.dag-node[data-key="teradata"] { animation-delay: 0.2s; }
+.dag-node[data-key="drexel"] { animation-delay: 0.35s; }
+.dag-node[data-key="exelon"] { animation-delay: 0.5s; }
+.dag-node[data-key="cantonica"] { animation-delay: 0.65s; }
+.dag-node[data-key="td"] { animation-delay: 0.8s; }
+.dag-node[data-key="next"] { animation-delay: 0.95s; }
+@keyframes nodeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .dag-node { animation: none; } }
+
+/* ── DAG DETAIL PANEL ── */
+.dag-detail {
+  max-width: 880px; margin: 1.25rem auto 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--cyan);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+.dd-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(53,208,232,0.55);
+  box-shadow: 0 0 0 4px rgba(53,208,232,0.1);
+}
+.dd-story {
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba(53,208,232,0.35);
+}
+.dag-detail.amber-b { border-left-color: var(--amber); }
+.dag-detail.green-b { border-left-color: var(--green); }
+
+.dd-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+.dd-org-wrap { display: flex; align-items: center; gap: 10px; }
+.dd-logo {
+  width: 32px; height: 32px;
+  object-fit: contain;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.92);
+  padding: 4px;
+  flex-shrink: 0;
+}
+.dd-org { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+.dd-date { font-family: var(--mono); font-size: 12px; color: var(--ink3); }
+.dd-role { font-family: var(--mono); font-size: 12.5px; color: var(--cyan); margin-bottom: 0.9rem; }
+.dd-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.dd-bullets li { font-size: 14px; color: var(--ink2); padding-left: 1.3rem; position: relative; }
+.dd-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-family: var(--mono); font-size: 12px; top: 2px; }
+.dd-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(120,160,200,0.1); }
+.dd-chip { font-family: var(--mono); font-size: 10.5px; color: var(--cyan); border: 1px solid rgba(53,208,232,0.3); background: var(--cyan-glow); border-radius: 4px; padding: 3px 10px; }
+
+/* ── SECTIONS ── */
+section { max-width: 1200px; margin: 0 auto; padding: 5rem 2.5rem; }
+
+.sec-label {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  color: var(--cyan); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+.sec-label::before { content: ''; width: 22px; height: 1px; background: var(--cyan); }
+
+.sec-title {
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+.sec-sub { font-size: 15px; color: var(--ink2); max-width: 640px; margin-bottom: 2.5rem; }
+
+/* ── SLIPSTREAM CASE STUDY ── */
+.case-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.case-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  padding: 1.1rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.case-name { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ink); }
+.case-name span { color: var(--cyan); }
+.case-status {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  padding: 4px 12px; border-radius: 20px;
+  background: rgba(240,180,41,0.1); color: var(--amber);
+  border: 1px solid rgba(240,180,41,0.35);
+}
+
+.case-body { padding: 2rem 1.75rem; }
+
+.stack-compare {
+  display: grid; grid-template-columns: 1fr 56px 1fr;
+  gap: 1rem; align-items: stretch;
+  margin-bottom: 2rem;
+}
+
+.stack-col {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stack-col.modern { border-color: rgba(53,208,232,0.35); }
+
+.stack-head {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink3); background: var(--bg3);
+}
+.stack-col.modern .stack-head { color: var(--cyan); }
+
+.stack-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(120,160,200,0.08);
+  font-size: 13.5px;
+}
+.stack-row:last-child { border-bottom: none; }
+.stack-what { font-family: var(--mono); font-size: 10.5px; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.05em; }
+.stack-tech { color: var(--ink2); font-weight: 500; text-align: right; }
+.stack-col.modern .stack-tech { color: var(--ink); }
+
+.stack-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); color: var(--cyan); font-size: 20px;
+}
+
+.case-metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; margin-bottom: 1.5rem;
+}
+.cm { background: var(--bg3); padding: 1.1rem 1.25rem; }
+.cm-num { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: var(--cyan); font-family: var(--mono); }
+.cm-label { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+
+.case-note { font-size: 14px; color: var(--ink2); line-height: 1.75; }
+.case-note strong { color: var(--ink); }
+.case-links { margin-top: 1.25rem; display: flex; gap: 1.5rem; }
+.case-links a { font-family: var(--mono); font-size: 12.5px; color: var(--cyan); text-decoration: none; }
+.case-links a:hover { text-decoration: underline; }
+
+/* ── PROJECTS ── */
+.projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+
+.proj-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+  display: flex; flex-direction: column;
+}
+.proj-card:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+
+.proj-title { font-size: 15.5px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+.proj-desc { font-size: 13.5px; color: var(--ink2); line-height: 1.65; margin-bottom: 1rem; flex: 1; }
+.proj-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1rem; }
+.proj-tag {
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 9px; border: 1px solid var(--border);
+  border-radius: 4px; color: var(--ink3);
+}
+.proj-tag.hi { border-color: rgba(53,208,232,0.4); color: var(--cyan); background: var(--cyan-glow); }
+
+.proj-footer { display: flex; align-items: center; justify-content: space-between; }
+.status { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 20px; }
+.status-live { background: rgba(63,214,143,0.1); color: var(--green); border: 1px solid rgba(63,214,143,0.35); }
+.status-wip { background: rgba(240,180,41,0.1); color: var(--amber); border: 1px solid rgba(240,180,41,0.35); }
+.proj-gh { font-family: var(--mono); font-size: 11.5px; color: var(--ink3); text-decoration: none; }
+.proj-gh:hover { color: var(--cyan); }
+
+/* ── MORE WORK INDEX ── */
+.more-work { margin-top: 2.5rem; }
+.mw-label { font-family: var(--mono); font-size: 12px; color: var(--ink3); margin-bottom: 0.9rem; }
+.mw-label span { color: var(--cyan); }
+.mw-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.mw-group {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--cyan);
+  padding: 0.7rem 1.4rem 0.55rem;
+  background: var(--bg3);
+  border-bottom: 1px solid rgba(120,160,200,0.08);
+}
+.mw-row {
+  display: grid; grid-template-columns: 260px 1fr auto;
+  gap: 1.25rem; align-items: center;
+  padding: 0.85rem 1.4rem;
+  background: var(--bg2);
+  border-bottom: 1px solid rgba(120,160,200,0.08);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.mw-row:last-child { border-bottom: none; }
+.mw-row:hover { background: var(--bg3); }
+.mw-name { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.mw-desc { font-size: 12.5px; color: var(--ink3); }
+.mw-tag { font-family: var(--mono); font-size: 10px; color: var(--cyan); border: 1px solid rgba(53,208,232,0.3); border-radius: 4px; padding: 2px 8px; white-space: nowrap; }
+
+/* ── PLAYBOOK BANNER ── */
+.playbook-banner {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 2rem; align-items: center;
+  background: linear-gradient(135deg, rgba(53,208,232,0.08), var(--bg2) 55%);
+  border: 1px solid rgba(53,208,232,0.35);
+  border-radius: 14px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 2.5rem;
+}
+.pb-label { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.5rem; }
+.pb-title { font-size: 21px; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+.pb-desc { font-size: 14px; color: var(--ink2); line-height: 1.7; max-width: 640px; }
+.pb-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; white-space: nowrap;
+  background: var(--cyan); color: #04222b;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  text-decoration: none; border-radius: 8px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.pb-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(53,208,232,0.35); }
+
+/* ── EXPERIENCE STRIP ── */
+.exp-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.exp-card { background: var(--bg2); padding: 1.75rem 2rem; display: grid; grid-template-columns: 210px 1fr; gap: 2.25rem; transition: background 0.2s; }
+.exp-card:hover { background: var(--bg3); }
+.exp-date { font-family: var(--mono); font-size: 11.5px; color: var(--cyan); margin-bottom: 4px; }
+.exp-loc { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+.exp-company-wrap { display: flex; align-items: center; gap: 11px; margin-bottom: 2px; }
+.exp-logo {
+  width: 34px; height: 34px;
+  object-fit: contain;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.92);
+  padding: 4px;
+  flex-shrink: 0;
+}
+.exp-company { font-size: 17.5px; font-weight: 700; }
+.exp-role { font-family: var(--mono); font-size: 11.5px; color: var(--ink3); margin-bottom: 0.85rem; }
+.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.exp-bullets li { font-size: 13.5px; color: var(--ink2); padding-left: 1.25rem; position: relative; line-height: 1.6; }
+.exp-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 11px; top: 3px; font-family: var(--mono); }
+
+/* ── CREDENTIALS + SKILLS ── */
+.certs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.cert-card {
+  display: flex; align-items: center; gap: 1.1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.4rem;
+  text-decoration: none; color: inherit;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.cert-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.cert-badge-img {
+  width: 64px; height: 64px; object-fit: contain; flex-shrink: 0;
+  border-radius: 8px;
+}
+.cert-badge-fallback {
+  width: 64px; height: 64px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: none; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--cyan);
+}
+.cert-name { font-size: 14px; font-weight: 700; line-height: 1.35; margin-bottom: 3px; }
+.cert-meta { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+.cert-verify { font-family: var(--mono); font-size: 11px; color: var(--cyan); margin-top: 5px; }
+
+.cred-strip { display: flex; flex-wrap: wrap; gap: 10px; }
+.cred-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--border); border-radius: 24px;
+  color: var(--ink2); text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.cred-chip:hover { border-color: var(--border-hi); color: var(--cyan); }
+.cred-chip::before { content: '⬡'; color: var(--cyan); font-size: 13px; }
+
+.skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.skill-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.skill-cat { font-family: var(--mono); font-size: 10.5px; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.skill-pill { display: block; font-size: 13px; color: var(--ink2); padding: 4px 0; }
+
+/* ── CONTACT ── */
+.contact-section { border-top: 1px solid var(--border); background: var(--bg2); max-width: none; }
+.contact-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.contact-heading { font-size: clamp(30px, 4vw, 46px); font-weight: 900; letter-spacing: -0.025em; line-height: 1.08; margin-bottom: 1rem; }
+.contact-heading span { color: var(--cyan); }
+.contact-sub { font-size: 14.5px; color: var(--ink2); line-height: 1.8; margin-bottom: 1.5rem; max-width: 440px; }
+
+.contact-links { display: flex; flex-direction: column; }
+.contact-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink2); text-decoration: none;
+  font-family: var(--mono); font-size: 12.5px;
+  transition: color 0.2s, padding-left 0.2s;
+}
+.contact-link:hover { color: var(--cyan); padding-left: 8px; }
+.cl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg);
+}
+.footer-text { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+.footer-text span { color: var(--cyan); }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* ── MOBILE ── */
+@media (max-width: 900px) {
+  .certs-grid { grid-template-columns: 1fr; }
+  .mw-row { grid-template-columns: 1fr; gap: 4px; }
+  .dag-detail { grid-template-columns: 1fr; gap: 0.9rem; }
+  .playbook-banner { grid-template-columns: 1fr; }
+  .mw-tag { justify-self: start; }
+  nav { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  .hero { padding: 7.5rem 1.25rem 2rem; }
+  section { padding: 3.5rem 1.25rem; }
+  .dag-section { padding: 1.5rem 1.25rem 0.5rem; }
+  .stack-compare { grid-template-columns: 1fr; }
+  .stack-arrow { transform: rotate(90deg); padding: 0.25rem 0; }
+  .case-metrics { grid-template-columns: 1fr 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .exp-card { grid-template-columns: 1fr; gap: 0.6rem; }
+  .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+  footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg" aria-hidden="true"></div>
+
+<nav>
+  <a href="#" class="nav-brand">Rohit Annasaheb Ragde</a>
+  <ul class="nav-links">
+    <li><a href="#slipstream">Case Study</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="Rohit_Annasaheb_Ragde_Resume.pdf" download class="nav-resume">↓ Resume</a>
+</nav>
+
+<main>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <img src="assets/profile.jpg" alt="Rohit Annasaheb Ragde" class="hero-avatar">
+  <div class="hero-badge">Available Now · Data Engineer · Philadelphia / Remote</div>
+  <h1>I make slow queries <span class="fast">fast</span>.</h1>
+  <p class="hero-sub">And messy pipelines <strong>boring</strong> — the good kind of boring. A data engineer with one superpower: <strong>database internals and performance</strong> — proven across six years in financial services, utilities, and telecom, most recently on AML transaction monitoring pipelines at TD Bank.</p>
+  <p class="hero-tagline">Python · SQL · PySpark · dbt · Airflow · Snowflake · DuckDB · Azure · AWS</p>
+  <div class="hero-actions">
+    <a href="mailto:rohit.ragde.de@gmail.com" class="btn-primary">Get in Touch →</a>
+    <a href="#slipstream" class="btn-ghost">See the Work</a>
+    <a href="https://linkedin.com/in/rohitaragde" target="_blank" rel="noopener" class="btn-ghost">LinkedIn ↗</a>
+    <a href="https://github.com/rohitaragde" target="_blank" rel="noopener" class="btn-ghost">GitHub ↗</a>
+  </div>
+  <p class="hero-proof">Trusted with production data at TD Bank · Exelon · Audi · Volkswagen · Bank of Ireland</p>
+</header>
+
+<!-- ── CAREER DAG ── -->
+<div class="dag-section">
+  <p class="dag-hint">// six years, drawn as a DAG — obviously. <span>click any node · hover to trace the flow</span></p>
+  <div class="dag-frame">
+    <div class="dag-toolbar">
+      <span class="dag-tb-title"><span class="tb-dot"></span>career_pipeline.dag</span>
+      <span class="dag-tb-status">6 succeeded · 1 queued — <em>your team?</em></span>
+    </div>
+    <div class="dag-svg-wrap">
+      <svg viewBox="0 0 1160 345" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Career timeline drawn as a directed acyclic graph, 2018 to present">
+
+        <defs>
+          <marker id="arrw" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 z" class="dag-edge-arrow"/>
+          </marker>
+          <linearGradient id="nodeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#16293e"/>
+            <stop offset="1" stop-color="#0d1a29"/>
+          </linearGradient>
+          <linearGradient id="nodeGradHot" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1b3450"/>
+            <stop offset="1" stop-color="#122336"/>
+          </linearGradient>
+        </defs>
+
+        <!-- edges: oracle → teradata → drexel → exelon → cantonica → td → open -->
+        <path class="dag-edge" data-link="oracle,teradata" pathLength="1" d="M 170 101 C 188 101, 187 236, 203 236" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="teradata,drexel" pathLength="1" d="M 395 236 C 411 236, 409 101, 423 101" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="drexel,exelon" pathLength="1" d="M 605 101 C 621 101, 619 236, 633 236" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="exelon,cantonica" pathLength="1" d="M 805 236 C 821 236, 819 101, 833 101" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="cantonica,td" pathLength="1" d="M 1005 101 C 1042 101, 1065 122, 1065 168" marker-end="url(#arrw)"/>
+        <path class="dag-edge open" data-link="td,next" d="M 1065 252 L 1065 276" marker-end="url(#arrw)"/>
+
+        <!-- connection ports -->
+        <circle class="dag-port" cx="170" cy="101" r="3"/>
+        <circle class="dag-port" cx="395" cy="236" r="3"/>
+        <circle class="dag-port" cx="605" cy="101" r="3"/>
+        <circle class="dag-port" cx="805" cy="236" r="3"/>
+        <circle class="dag-port" cx="1005" cy="101" r="3"/>
+
+        <!-- data packets flowing through the career pipeline -->
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="0.8s" path="M 170 101 C 188 101, 187 236, 203 236"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="1.5s" path="M 395 236 C 411 236, 409 101, 423 101"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="2.2s" path="M 605 101 C 621 101, 619 236, 633 236"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="2.9s" path="M 805 236 C 821 236, 819 101, 833 101"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="3.6s" path="M 1005 101 C 1042 101, 1065 122, 1065 168"/>
+        </circle>
+        <circle class="dag-packet green" r="2.5">
+          <animateMotion dur="2s" repeatCount="indefinite" begin="4.3s" path="M 1065 252 L 1065 276"/>
+        </circle>
+
+        <!-- 2018 Oracle certification (origin node) -->
+        <g class="dag-node" data-key="oracle" tabindex="0" role="button" aria-label="2018, Oracle SQL certified, Mumbai">
+          <rect x="20" y="60" width="150" height="82" rx="12"/>
+          <text class="dag-year" x="36" y="84">2018 · ORIGIN</text>
+          <text class="dag-org" x="36" y="106">Oracle</text>
+          <text class="dag-role" x="36" y="124">SQL · PL/SQL · DBA</text>
+        </g>
+
+        <!-- 2019 Teradata -->
+        <g class="dag-node" data-key="teradata" tabindex="0" role="button" aria-label="2019 to 2022, Teradata, Mumbai">
+          <rect x="205" y="195" width="190" height="82" rx="12"/>
+          <text class="dag-year" x="221" y="219">2019 · MUMBAI</text>
+          <text class="dag-org" x="221" y="241">Teradata</text>
+          <text class="dag-role" x="221" y="259">Audi · VW · BOI · 2.5TB/day</text>
+        </g>
+
+        <!-- 2022 Drexel -->
+        <g class="dag-node amber" data-key="drexel" tabindex="0" role="button" aria-label="2022 to 2024, Drexel University, Philadelphia">
+          <rect x="425" y="60" width="180" height="82" rx="12"/>
+          <text class="dag-year" x="441" y="84">2022 · BET ON MYSELF</text>
+          <text class="dag-org" x="441" y="106">MS Comp Sci</text>
+          <text class="dag-role" x="441" y="124">Drexel · Philadelphia</text>
+        </g>
+
+        <!-- 2023 Exelon -->
+        <g class="dag-node" data-key="exelon" tabindex="0" role="button" aria-label="2023, Exelon">
+          <rect x="635" y="195" width="170" height="82" rx="12"/>
+          <text class="dag-year" x="651" y="219">2023 · FORTUNE 100</text>
+          <text class="dag-org" x="651" y="241">Exelon</text>
+          <text class="dag-role" x="651" y="259">15TB+/day PySpark</text>
+        </g>
+
+        <!-- 2024 Cantonica -->
+        <g class="dag-node" data-key="cantonica" tabindex="0" role="button" aria-label="2024 to 2025, tech startup">
+          <rect x="835" y="60" width="170" height="82" rx="12"/>
+          <text class="dag-year" x="851" y="84">2024 · STARTUP</text>
+          <text class="dag-org" x="851" y="106">Cantonica</text>
+          <text class="dag-role" x="851" y="124">owned the whole stack</text>
+        </g>
+
+        <!-- 2025 TD Bank -->
+        <g class="dag-node" data-key="td" tabindex="0" role="button" aria-label="2025 to 2026, TD Bank">
+          <rect x="985" y="170" width="160" height="82" rx="12"/>
+          <text class="dag-year" x="1001" y="194">2025 · BANKING</text>
+          <text class="dag-org" x="1001" y="216">TD Bank</text>
+          <text class="dag-role" x="1001" y="234">AML data pipelines</text>
+        </g>
+
+        <!-- 2026 open node -->
+        <g class="dag-node open-node" data-key="next" tabindex="0" role="button" aria-label="2026, the next node is open">
+          <rect x="985" y="280" width="160" height="56" rx="12"/>
+          <text class="dag-year" x="1001" y="303">2026 · OPEN</text>
+          <text class="dag-org" x="1001" y="325">your team?</text>
+        </g>
+
+
+        <!-- task status: every node ran green -->
+        <circle class="dag-status" cx="152" cy="78" r="3.5"/>
+        <circle class="dag-status" cx="377" cy="213" r="3.5"/>
+        <circle class="dag-status amber-s" cx="587" cy="78" r="3.5"/>
+        <circle class="dag-status" cx="787" cy="213" r="3.5"/>
+        <circle class="dag-status" cx="987" cy="78" r="3.5"/>
+        <circle class="dag-status" cx="1127" cy="188" r="3.5"/>
+        <circle class="dag-status pulse" cx="1127" cy="298" r="3.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="dag-detail" id="dagDetail" aria-live="polite">
+    <img src="assets/profile.jpg" alt="Rohit narrating this chapter" class="dd-avatar">
+    <div class="dd-content">
+      <div class="dd-head">
+        <div class="dd-org-wrap">
+          <img id="ddLogo" class="dd-logo" src="" alt="" style="display:none">
+          <div class="dd-org" id="ddOrg">TD Bank</div>
+        </div>
+        <div class="dd-date" id="ddDate">Oct 2025 — Jul 2026 · Philadelphia, PA</div>
+      </div>
+      <div class="dd-role" id="ddRole">Data Engineer — AML Transaction Monitoring & Regulatory Reporting</div>
+      <p class="dd-story" id="ddStory"></p>
+      <ul class="dd-bullets" id="ddBullets"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIPSTREAM CASE STUDY ── -->
+<section id="slipstream">
+  <div class="sec-label reveal">featured case study</div>
+  <h2 class="sec-title reveal">Slipstream: Legacy Teradata → Modern Stack</h2>
+  <p class="sec-sub reveal">A production ELT pipeline I originally led at Teradata, rebuilt end-to-end on the modern data stack — same data, same business logic, every line rewritten and re-architected by hand.</p>
+
+  <div class="case-wrap reveal">
+    <div class="case-banner">
+      <div class="case-name"><span>$</span> slipstream_modern — subscriber voice &amp; data plan ELT</div>
+      <div class="case-status">ingestion complete · dbt layer in progress</div>
+    </div>
+    <div class="case-body">
+
+      <div class="stack-compare">
+        <div class="stack-col">
+          <div class="stack-head">Legacy (2019)</div>
+          <div class="stack-row"><span class="stack-what">Ingest</span><span class="stack-tech">Teradata TPT scripts ×6</span></div>
+          <div class="stack-row"><span class="stack-what">Transform</span><span class="stack-tech">BTEQ stored procedures</span></div>
+          <div class="stack-row"><span class="stack-what">Orchestrate</span><span class="stack-tech">Shell scripts + cron</span></div>
+          <div class="stack-row"><span class="stack-what">Test</span><span class="stack-tech">Manual Excel test cases</span></div>
+          <div class="stack-row"><span class="stack-what">Logs</span><span class="stack-tech">Plain text files</span></div>
+        </div>
+        <div class="stack-arrow">→</div>
+        <div class="stack-col modern">
+          <div class="stack-head">Modern (2026)</div>
+          <div class="stack-row"><span class="stack-what">Ingest</span><span class="stack-tech">Python + DuckDB + Parquet</span></div>
+          <div class="stack-row"><span class="stack-what">Transform</span><span class="stack-tech">dbt staging &amp; mart models</span></div>
+          <div class="stack-row"><span class="stack-what">Orchestrate</span><span class="stack-tech">Apache Airflow DAGs</span></div>
+          <div class="stack-row"><span class="stack-what">Test</span><span class="stack-tech">pytest + dbt schema tests</span></div>
+          <div class="stack-row"><span class="stack-what">Logs</span><span class="stack-tech">Structured JSON logging</span></div>
+        </div>
+      </div>
+
+      <div class="case-metrics">
+        <div class="cm"><div class="cm-num">10</div><div class="cm-label">CSV sources ingested</div></div>
+        <div class="cm"><div class="cm-num">6</div><div class="cm-label">DuckDB staging tables</div></div>
+        <div class="cm"><div class="cm-num">100%</div><div class="cm-label">Row-count reconciliation</div></div>
+        <div class="cm"><div class="cm-num">5</div><div class="cm-label">Bugs found, fixed &amp; documented</div></div>
+      </div>
+
+      <p class="case-note">
+        <strong>Why this project:</strong> most portfolio pipelines run happy-path demos on toy data. This one migrates a real production system I built and operated — including the unglamorous parts: idempotent re-runs, file archiving, Windows path resolution, silent validation failures, and column-name mismatches that only surface on real files. Every bug is documented with its root cause and fix. Ingestion layer is complete and verified; the dbt transformation layer (replacing the original StgToTrn stored procedure) is the current milestone.
+      </p>
+      <div class="case-links">
+        <a href="https://github.com/rohitaragde/Projects" target="_blank" rel="noopener">main projects repo ↗</a>
+        <a href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/Voice-Data-ELT-Automation-with-Teradata" target="_blank" rel="noopener">original teradata version ↗</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="sec-label reveal">more projects</div>
+  <h2 class="sec-title reveal">Projects</h2>
+  <p class="sec-sub reveal">Individual repos linked per project · <a href="https://github.com/rohitaragde/Projects" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;font-family:var(--mono);font-size:13px">browse the main projects repo ↗</a></p>
+  <div class="playbook-banner reveal">
+    <div>
+      <div class="pb-label">The Masterclass — not a project, a discipline</div>
+      <div class="pb-title">SQL Performance Tuning Playbook</div>
+      <p class="pb-desc">"I make slow queries fast," written down so it's teachable — reading execution plans, indexing and partitioning strategy, join restructuring, and the tuning workflow refined in production across Teradata, Oracle, Snowflake, and SQL Server.</p>
+    </div>
+    <a href="https://github.com/rohitaragde/SQL-Performance-Tuning-PlayBook" target="_blank" rel="noopener" class="pb-cta">Read the Playbook ↗</a>
+  </div>
+
+  <div class="projects-grid reveal">
+
+    <div class="proj-card">
+      <h3 class="proj-title">Uber ETL Automation — Airflow + Mage</h3>
+      <p class="proj-desc">Automated ETL over Uber trip data — ingestion, dimensional transformation, and analytics-ready loading, orchestrated end to end with Airflow and Mage. Demonstrates the orchestration patterns (DAG design, task dependencies, scheduling) that production pipelines live on.</p>
+      <div class="proj-tags">
+        <span class="proj-tag hi">Airflow</span><span class="proj-tag hi">Mage</span><span class="proj-tag">Python</span><span class="proj-tag">ETL</span>
+      </div>
+      <div class="proj-footer">
+        <span class="status status-live">Live</span>
+        <a href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/Uber-ETL-Automation-with-Airflow-Mage" class="proj-gh" target="_blank" rel="noopener">github ↗</a>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <h3 class="proj-title">Azure Olympic Data Engineering Pipeline</h3>
+      <p class="proj-desc">End-to-end Azure data pipeline over Olympic datasets — cloud ingestion, Spark transformations on Databricks, and an analytics serving layer. A compact demonstration of the same Azure patterns used at Exelon on 15TB+/day production workloads.</p>
+      <div class="proj-tags">
+        <span class="proj-tag hi">Azure</span><span class="proj-tag hi">Databricks</span><span class="proj-tag">Spark</span><span class="proj-tag">Data Factory</span>
+      </div>
+      <div class="proj-footer">
+        <span class="status status-live">Live</span>
+        <a href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/Azure-Olympic-Data-Engineering-Pipeline" class="proj-gh" target="_blank" rel="noopener">github ↗</a>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <h3 class="proj-title">Real-Time Financial Data Streaming Pipeline</h3>
+      <p class="proj-desc">Real-time transaction streaming in active development: Kafka producers → AWS-hosted brokers → Snowpipe continuous ingestion → Snowflake Streams &amp; Tasks for incremental transformation — with a Claude API multi-agent layer for automated orchestration. The next flagship alongside Slipstream.</p>
+      <div class="proj-tags">
+        <span class="proj-tag hi">Kafka</span><span class="proj-tag hi">Snowpipe</span><span class="proj-tag">Snowflake</span><span class="proj-tag">Claude API</span>
+      </div>
+      <div class="proj-footer">
+        <span class="status status-wip">In Development · Jun 2026</span>
+        <a href="https://github.com/rohitaragde" class="proj-gh" target="_blank" rel="noopener">github ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="more-work reveal">
+    <p class="mw-label">// more in the repo — <span>every link is real code</span></p>
+    <div class="mw-list">
+
+      <div class="mw-group">Data Engineering</div>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/Covid-19-Data-ETL-Automation-with-Airflow" target="_blank" rel="noopener">
+        <span class="mw-name">COVID-19 Data ETL Automation</span>
+        <span class="mw-desc">Scheduled ETL over public health data, orchestrated with Airflow</span>
+        <span class="mw-tag">Airflow</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/SSIS_SQL_ETL_Pipeline" target="_blank" rel="noopener">
+        <span class="mw-name">SSIS SQL ETL Pipeline</span>
+        <span class="mw-desc">Classic Microsoft-stack ETL — SQL Server Integration Services end to end</span>
+        <span class="mw-tag">SSIS · SQL Server</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/OrderDataSQL-ETL-Analysis-Pipeline" target="_blank" rel="noopener">
+        <span class="mw-name">Order Data SQL ETL &amp; Analysis</span>
+        <span class="mw-desc">Retail order data pipeline — ingestion, transformation, SQL analysis</span>
+        <span class="mw-tag">SQL · ETL</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Engineering%20Projects/Voice-Data-ELT-Automation-with-Teradata" target="_blank" rel="noopener">
+        <span class="mw-name">Voice Data ELT — Teradata</span>
+        <span class="mw-desc">The original Slipstream — production ELT design this portfolio's case study rebuilds</span>
+        <span class="mw-tag">Teradata</span>
+      </a>
+
+      <div class="mw-group">Data Science &amp; Analytics</div>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Science%20Projects/PySpark-House-Prices-Analysis" target="_blank" rel="noopener">
+        <span class="mw-name">PySpark House Prices Analysis</span>
+        <span class="mw-desc">Distributed data analysis with PySpark over housing market data</span>
+        <span class="mw-tag">PySpark</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Science%20Projects/Loan_Repayment_Prediction_Analysis_System" target="_blank" rel="noopener">
+        <span class="mw-name">Loan Repayment Prediction System</span>
+        <span class="mw-desc">Financial risk modeling — data preparation through prediction</span>
+        <span class="mw-tag">Python · ML</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Data%20Science%20Projects/FitTrack" target="_blank" rel="noopener">
+        <span class="mw-name">FitTrack</span>
+        <span class="mw-desc">Fitness data tracking and analysis application</span>
+        <span class="mw-tag">Python</span>
+      </a>
+
+      <div class="mw-group">Software Engineering</div>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Software%20Engineering%20Projects/Collaborative-Chat-Application-QUIC" target="_blank" rel="noopener">
+        <span class="mw-name">Collaborative Chat over QUIC</span>
+        <span class="mw-desc">Real-time collaborative chat built on the QUIC transport protocol — networking and concurrency beyond the data stack</span>
+        <span class="mw-tag">Networking</span>
+      </a>
+
+      <a class="mw-row" href="https://github.com/rohitaragde/Projects/tree/master/Software%20Engineering%20Projects/NatureQuest-Flask-Web-App" target="_blank" rel="noopener">
+        <span class="mw-name">NatureQuest — Flask Web App</span>
+        <span class="mw-desc">Full-stack Flask application — backend, routing, templating, and deployment as a complete product</span>
+        <span class="mw-tag">Flask · Full-stack</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+<section id="experience">
+  <div class="sec-label reveal">work history</div>
+  <h2 class="sec-title reveal">Experience</h2>
+  <div class="exp-list reveal">
+
+    <div class="exp-card">
+      <div>
+        <div class="exp-date">Oct 2025 — Jul 2026</div>
+        <div class="exp-loc">Philadelphia, PA · Financial Services</div>
+      </div>
+      <div>
+        <div class="exp-company-wrap">
+          <img src="assets/logos/tdbank.png" alt="" class="exp-logo" onerror="this.style.display='none'">
+          <div class="exp-company">TD Bank <span style="font-family:var(--mono);font-size:11px;color:var(--ink3);font-weight:400">via Protiviti</span></div>
+        </div>
+        <div class="exp-role">Data Engineer — AML Transaction Monitoring &amp; Regulatory Reporting</div>
+        <ul class="exp-bullets">
+          <li>Architected SQL pipelines integrating 15+ source systems powering AML transaction monitoring, regulatory reporting, and financial crime analytics</li>
+          <li>Led analytics infrastructure migration to AWS — S3 data lake architecture, RDS, PySpark transformations, Airflow orchestration</li>
+          <li>Engineered 30+ automated data quality validation frameworks — reducing data incidents by 40% and ensuring SOX compliance</li>
+          <li>Automated reconciliation workflows saving 40+ hours/month via Python, Bash, and GitHub Actions CI/CD</li>
+          <li>Designed Power BI and Tableau dashboards tracking 20+ financial KPIs and AML metrics for compliance leadership</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div>
+        <div class="exp-date">Sep 2024 — Sep 2025</div>
+        <div class="exp-loc">Philadelphia, PA · Tech Startup</div>
+      </div>
+      <div>
+        <div class="exp-company-wrap">
+          <img src="assets/logos/cantonica.png" alt="" class="exp-logo" onerror="this.style.display='none'">
+          <div class="exp-company">Cantonica</div>
+        </div>
+        <div class="exp-role">Data Engineer — Data Platform &amp; Analytics</div>
+        <ul class="exp-bullets">
+          <li>Built end-to-end pipelines with Snowflake and dbt — dimensional models reducing data prep time by 30%</li>
+          <li>Optimized SQL queries and schema design, improving processing performance by 25%</li>
+          <li>Integrated pipelines with Django backend via REST APIs and MongoDB for real-time product features</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div>
+        <div class="exp-date">Jun 2023 — Dec 2023</div>
+        <div class="exp-loc">Wilmington, DE · Utilities</div>
+      </div>
+      <div>
+        <div class="exp-company-wrap">
+          <img src="assets/logos/exelon.png" alt="" class="exp-logo" onerror="this.style.display='none'">
+          <div class="exp-company">Exelon</div>
+        </div>
+        <div class="exp-role">Data Engineer — Advanced Data Analytics</div>
+        <ul class="exp-bullets">
+          <li>Built PySpark pipelines on Azure Databricks processing 15+ TB daily with 95% SLA reliability</li>
+          <li>Reduced pipeline execution time by 30% through bottleneck identification and optimization</li>
+          <li>Engineered Azure Data Factory workflows reducing data latency by 45% in on-prem to cloud migration</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div>
+        <div class="exp-date">Sep 2019 — Aug 2022</div>
+        <div class="exp-loc">Mumbai, India · Enterprise Consulting</div>
+      </div>
+      <div>
+        <div class="exp-company-wrap">
+          <img src="assets/logos/teradata.png" alt="" class="exp-logo" onerror="this.style.display='none'">
+          <div class="exp-company">Teradata</div>
+        </div>
+        <div class="exp-role">Data Engineer · Audi · Bank of Ireland · Volkswagen</div>
+        <ul class="exp-bullets">
+          <li>Led SLIPSTREAM — automated ELT pipeline processing 10M+ telecom subscriber records daily, improving revenue forecasting accuracy by 25%</li>
+          <li>Architected 10+ enterprise ETL/ELT pipelines on Teradata Vantage, Talend, and SQL Server — 2.5TB daily at 95% reliability</li>
+          <li>Optimized 100+ complex SQL queries, transforming response times from minutes to seconds</li>
+          <li>Built 40+ Python/Bash automation scripts reducing mean time to resolution from hours to minutes</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CREDENTIALS ── -->
+<section id="credentials">
+  <div class="sec-label reveal">credentials</div>
+  <h2 class="sec-title reveal">Certifications</h2>
+  <p class="sec-sub reveal">All badges verifiable on Credly.</p>
+  <div class="certs-grid reveal">
+
+    <a href="https://www.credly.com/users/rohit-ragde" target="_blank" rel="noopener" class="cert-card">
+      <img src="assets/badges/teradata-vantage-administrator.png" alt="Teradata Vantage Certified Administrator badge" class="cert-badge-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="cert-badge-fallback">TD</div>
+      <div>
+        <div class="cert-name">Teradata Vantage Certified Administrator — Advanced SQL Engine</div>
+        <div class="cert-meta">Teradata · Jun 2021</div>
+        <div class="cert-verify">↗ Verify on Credly</div>
+      </div>
+    </a>
+
+    <a href="https://www.credly.com/users/rohit-ragde" target="_blank" rel="noopener" class="cert-card">
+      <img src="assets/badges/teradata-vantage-sql-associate.png" alt="Teradata Vantage Certified SQL Associate badge" class="cert-badge-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="cert-badge-fallback">TD</div>
+      <div>
+        <div class="cert-name">Teradata Vantage Certified Associate — Advanced SQL Engine</div>
+        <div class="cert-meta">Teradata · Mar 2021</div>
+        <div class="cert-verify">↗ Verify on Credly</div>
+      </div>
+    </a>
+
+    <a href="https://www.credly.com/users/rohit-ragde" target="_blank" rel="noopener" class="cert-card">
+      <img src="assets/badges/oracle-sql-associate.png" alt="Oracle Database SQL Certified Associate badge" class="cert-badge-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="cert-badge-fallback">OC</div>
+      <div>
+        <div class="cert-name">Oracle Certified Associate — SQL (1Z0-071)</div>
+        <div class="cert-meta">Oracle · Aug 2018</div>
+        <div class="cert-verify">↗ Verify on Credly</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="sec-label reveal">stack</div>
+  <h2 class="sec-title reveal">Technical Skills</h2>
+  <div class="skills-grid reveal">
+    <div class="skill-card">
+      <div class="skill-cat">Languages</div>
+      <span class="skill-pill">Python</span><span class="skill-pill">SQL · T-SQL</span><span class="skill-pill">Oracle PL/SQL</span><span class="skill-pill">Bash / Shell</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Processing</div>
+      <span class="skill-pill">PySpark / Spark</span><span class="skill-pill">Kafka · Streaming</span><span class="skill-pill">Delta Lake · DuckDB</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Cloud</div>
+      <span class="skill-pill">Azure Databricks · ADF</span><span class="skill-pill">AWS S3 · Glue</span><span class="skill-pill">Snowflake</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Orchestration</div>
+      <span class="skill-pill">Apache Airflow</span><span class="skill-pill">dbt</span><span class="skill-pill">GitHub Actions · Docker</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Data Quality</div>
+      <span class="skill-pill">dbt tests · pytest</span><span class="skill-pill">Great Expectations</span><span class="skill-pill">SOX · Regulatory</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Databases</div>
+      <span class="skill-pill">Oracle (DBA · PL/SQL)</span><span class="skill-pill">Teradata · SQL Server</span><span class="skill-pill">PostgreSQL · MongoDB</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">GenAI</div>
+      <span class="skill-pill">Claude API</span><span class="skill-pill">Agentic pipelines</span><span class="skill-pill">LLM enrichment</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Visualization</div>
+      <span class="skill-pill">Power BI · Tableau</span><span class="skill-pill">dbt Docs</span><span class="skill-pill">Excel (advanced)</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ── CONTACT ── -->
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="sec-label">contact</div>
+      <h2 class="contact-heading">The next node<br>is <span>open</span>.</h2>
+      <p class="contact-sub">Open to Data Engineer and Analytics Engineer roles — full-time, contract, W2 or C2C. Philadelphia, New York, remote, or relocation.</p>
+      <a href="mailto:rohit.ragde.de@gmail.com" class="btn-primary">rohit.ragde.de@gmail.com →</a>
+    </div>
+    <div class="contact-links reveal">
+      <a href="mailto:rohit.ragde.de@gmail.com" class="contact-link"><span class="cl-dot"></span>rohit.ragde.de@gmail.com</a>
+      <a href="tel:+12672781779" class="contact-link"><span class="cl-dot"></span>+1 (267) 278-1779</a>
+      <a href="https://linkedin.com/in/rohitaragde" class="contact-link" target="_blank" rel="noopener"><span class="cl-dot"></span>linkedin.com/in/rohitaragde</a>
+      <a href="https://github.com/rohitaragde" class="contact-link" target="_blank" rel="noopener"><span class="cl-dot"></span>github.com/rohitaragde</a>
+      <a href="https://github.com/rohitaragde/Projects" class="contact-link" target="_blank" rel="noopener"><span class="cl-dot"></span>github.com/rohitaragde/Projects — main repo</a>
+      <a href="https://www.credly.com/users/rohit-ragde" class="contact-link" target="_blank" rel="noopener"><span class="cl-dot"></span>credly.com/users/rohit-ragde</a>
+      <a href="Rohit_Annasaheb_Ragde_Resume.pdf" download class="contact-link"><span class="cl-dot"></span>Download Resume PDF</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">Rohit Annasaheb Ragde · <span>Data Engineer</span> · Philadelphia, PA</div>
+  <div class="footer-text">performance tuning isn't my task — <span>it's my passion</span></div>
+</footer>
+
+<script>
+// ── CAREER DAG DATA ──
+const dagData = {
+  oracle: {
+    logo: "assets/logos/oracle.png",
+    story: "Where it started - a training room in Mumbai. I learned SQL, PL/SQL, and how databases actually think, and cleared the Oracle certification before I’d written a line of production code.",
+    org: "The Origin Node",
+    date: "2018 · Mumbai, India",
+    role: "Oracle SQL · PL/SQL · DBA — certified 1Z0-071 SQL Associate",
+    color: "",
+    stack: ["Oracle SQL", "PL/SQL", "Database Administration"],
+    bullets: [
+      "Where it started: intensive Oracle training — SQL, PL/SQL, and database administration",
+      "Cleared the Oracle SQL 1Z0-071 certification (Aug 2018) before writing a single line of production code",
+      "First taste of the craft — making slow things fast, one query at a time"
+    ]
+  },
+  teradata: {
+    logo: "assets/logos/teradata.png",
+    story: "My enterprise years. Audi, Volkswagen, Bank of Ireland - 2.5TB a day taught me that performance isn’t a feature, it’s the whole job.",
+    org: "Teradata",
+    date: "Sep 2019 — Aug 2022 · Mumbai, India",
+    role: "Data Engineer · Audi · Volkswagen · Bank of Ireland",
+    color: "",
+    stack: ["Teradata Vantage", "Talend", "SQL Server", "Python", "Bash"],
+    bullets: [
+      "Led SLIPSTREAM — automated ELT pipeline processing 10M+ telecom subscriber records daily, improving revenue forecasting accuracy by 25%",
+      "Architected 10+ enterprise ETL/ELT pipelines on Teradata Vantage, Talend, and SQL Server — 2.5TB daily at 95% reliability",
+      "Optimized 100+ complex SQL queries — response times from minutes to seconds",
+      "Built 40+ Python/Bash automation scripts cutting mean time to resolution from hours to minutes"
+    ]
+  },
+  drexel: {
+    logo: "assets/logos/drexel.png",
+    story: "Two suitcases and an admit letter. I left a stable role in Mumbai to rebuild my foundations from first principles - the bet that made everything after possible.",
+    org: "Drexel University",
+    date: "Aug 2022 — Jun 2024 · Philadelphia, PA",
+    role: "MS Computer Science — moved to the US with two suitcases and an admit",
+    color: "amber-b",
+    stack: ["Distributed Systems", "Big Data", "Machine Learning", "Cloud Computing"],
+    bullets: [
+      "The bet-on-myself node: left a stable role to level up",
+      "Deepened fundamentals — algorithms, distributed systems, and the theory behind the tools"
+    ]
+  },
+  exelon: {
+    logo: "assets/logos/exelon.png",
+    story: "My first US production role - 15TB+ a day of utility data on Azure Databricks. Cloud scale, real SLAs, and no room for pipelines that only work on good days.",
+    org: "Exelon",
+    date: "Jun 2023 — Dec 2023 · Wilmington, DE",
+    role: "Data Engineer — Advanced Data Analytics",
+    color: "",
+    stack: ["PySpark", "Azure Databricks", "Delta Lake", "Data Factory", "Synapse"],
+    bullets: [
+      "PySpark pipelines on Azure Databricks processing 15+ TB daily at 95% SLA reliability",
+      "Cut pipeline execution time 30% through bottleneck identification",
+      "Azure Data Factory workflows reducing data latency 45% in on-prem → cloud migration"
+    ]
+  },
+  cantonica: {
+    logo: "assets/logos/cantonica.png",
+    story: "A startup where I was the data team. Every pipeline, every model, every dashboard - mine to design, mine to own, mine to fix.",
+    org: "Cantonica",
+    date: "Sep 2024 — Sep 2025 · Philadelphia, PA",
+    role: "Data Engineer — owned the entire data stack, solo",
+    color: "",
+    stack: ["Snowflake", "dbt", "GCP", "MongoDB", "REST APIs", "Power BI"],
+    bullets: [
+      "End-to-end pipelines on Snowflake + dbt — dimensional models cutting data prep time 30%",
+      "SQL and schema optimization improving processing performance 25%",
+      "Integrated with Django backend via REST APIs and MongoDB for real-time features"
+    ]
+  },
+  td: {
+    logo: "assets/logos/tdbank.png",
+    story: "AML transaction monitoring at one of North America’s largest banks - where data engineering meets financial crime prevention, and every number has a regulator reading it.",
+    org: "TD Bank (via Protiviti)",
+    date: "Oct 2025 — Jul 2026 · Philadelphia, PA",
+    role: "Data Engineer — AML Transaction Monitoring & Regulatory Reporting",
+    color: "",
+    stack: ["SQL", "AWS S3 · RDS", "PySpark", "Airflow", "GitHub Actions", "Power BI"],
+    bullets: [
+      "SQL pipelines integrating 15+ source systems powering AML transaction monitoring and financial crime analytics",
+      "Led analytics infrastructure migration to AWS — S3 data lake, RDS, PySpark transformations, Airflow orchestration",
+      "30+ automated data quality validation frameworks — data incidents down 40%, SOX-compliant",
+      "Automated reconciliation workflows saving 40+ hours/month via Python, Bash, and GitHub Actions CI/CD"
+    ]
+  },
+  next: {
+    story: "The next node is open. If your team needs someone who makes slow queries fast and messy pipelines boring - let’s talk.",
+    org: "Your team?",
+    date: "2026 — the next node is open",
+    role: "Data Engineer · Analytics Engineer · full-time or contract",
+    color: "green-b",
+    stack: ["Your stack here"],
+    bullets: [
+      "Philadelphia, New York, remote, or relocation",
+      "Currently building: Slipstream modernization (DuckDB → dbt → Airflow) — see the case study below",
+      "rohit.ragde.de@gmail.com — DMs open on LinkedIn too"
+    ]
+  }
+};
+
+const detail = document.getElementById('dagDetail');
+const ddOrg = document.getElementById('ddOrg');
+const ddDate = document.getElementById('ddDate');
+const ddRole = document.getElementById('ddRole');
+const ddBullets = document.getElementById('ddBullets');
+const nodes = document.querySelectorAll('.dag-node');
+
+function selectNode(key, el) {
+  const d = dagData[key];
+  if (!d) return;
+  ddOrg.textContent = d.org;
+  ddDate.textContent = d.date;
+  ddRole.textContent = d.role;
+  const logoEl = document.getElementById('ddLogo');
+  if (d.logo) {
+    logoEl.style.display = 'none';
+    logoEl.onload = () => { logoEl.style.display = 'block'; };
+    logoEl.onerror = () => { logoEl.style.display = 'none'; };
+    logoEl.src = d.logo;
+    logoEl.alt = d.org + ' logo';
+  } else {
+    logoEl.style.display = 'none';
+    logoEl.removeAttribute('src');
+  }
+  document.getElementById('ddStory').textContent = d.story ? '\u201C' + d.story + '\u201D' : '';
+  ddBullets.innerHTML = '';
+  d.bullets.forEach(b => {
+    const li = document.createElement('li');
+    li.textContent = b;
+    ddBullets.appendChild(li);
+  });
+  const oldStack = detail.querySelector('.dd-stack');
+  if (oldStack) oldStack.remove();
+  if (d.stack && d.stack.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dd-stack';
+    d.stack.forEach(s => {
+      const chip = document.createElement('span');
+      chip.className = 'dd-chip';
+      chip.textContent = s;
+      wrap.appendChild(chip);
+    });
+    detail.querySelector('.dd-content').appendChild(wrap);
+  }
+  detail.className = 'dag-detail' + (d.color ? ' ' + d.color : '');
+  nodes.forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// lineage highlighting: hovering a node lights its connected edges
+const edges = document.querySelectorAll('.dag-edge');
+function setLineage(key, on) {
+  edges.forEach(e => {
+    const link = (e.dataset.link || '').split(',');
+    if (link.includes(key)) e.classList.toggle('lit', on);
+  });
+}
+
+nodes.forEach(n => {
+  n.addEventListener('click', () => selectNode(n.dataset.key, n));
+  n.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(n.dataset.key, n); }
+  });
+  n.addEventListener('mouseenter', () => setLineage(n.dataset.key, true));
+  n.addEventListener('mouseleave', () => setLineage(n.dataset.key, false));
+  n.addEventListener('focus', () => setLineage(n.dataset.key, true));
+  n.addEventListener('blur', () => setLineage(n.dataset.key, false));
+});
+
+// default: show current status (TD, most recent completed)
+selectNode('td', document.querySelector('[data-key="td"]'));
+
+// ── SCROLL REVEAL ──
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!prefersReduced) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 50);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>
