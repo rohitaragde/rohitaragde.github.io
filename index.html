@@ -249,7 +249,9 @@ nav {
 .dag-hint span { color: var(--cyan); }
 
 .dag-frame {
-  background: linear-gradient(180deg, var(--bg2), var(--panel));
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 20%, rgba(53,208,232,0.05), transparent 70%),
+    linear-gradient(180deg, var(--bg2), var(--panel));
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem 1rem 0.5rem;
@@ -300,17 +302,50 @@ nav {
 }
 .dag-edge-arrow { fill: rgba(53,208,232,0.7); }
 .dag-port { fill: var(--cyan); opacity: 0.55; }
-.dag-node image { pointer-events: none; }
+.dag-packet { fill: var(--cyan); opacity: 0.85; filter: drop-shadow(0 0 4px rgba(53,208,232,0.8)); }
+.dag-packet.green { fill: var(--green); filter: drop-shadow(0 0 4px rgba(63,214,143,0.8)); }
+@media (prefers-reduced-motion: reduce) { .dag-packet { display: none; } }
+
+.dag-node { transform-box: fill-box; transform-origin: center; animation: nodeIn 0.55s ease backwards; }
+.dag-node[data-key="oracle"] { animation-delay: 0.05s; }
+.dag-node[data-key="teradata"] { animation-delay: 0.2s; }
+.dag-node[data-key="drexel"] { animation-delay: 0.35s; }
+.dag-node[data-key="exelon"] { animation-delay: 0.5s; }
+.dag-node[data-key="cantonica"] { animation-delay: 0.65s; }
+.dag-node[data-key="td"] { animation-delay: 0.8s; }
+.dag-node[data-key="next"] { animation-delay: 0.95s; }
+@keyframes nodeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .dag-node { animation: none; } }
 
 /* ── DAG DETAIL PANEL ── */
 .dag-detail {
-  max-width: 860px; margin: 1.25rem auto 0;
+  max-width: 880px; margin: 1.25rem auto 0;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-left: 3px solid var(--cyan);
   border-radius: var(--radius);
   padding: 1.5rem 1.75rem;
   text-align: left;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+.dd-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(53,208,232,0.55);
+  box-shadow: 0 0 0 4px rgba(53,208,232,0.1);
+}
+.dd-story {
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba(53,208,232,0.35);
 }
 .dag-detail.amber-b { border-left-color: var(--amber); }
 .dag-detail.green-b { border-left-color: var(--green); }
@@ -597,6 +632,7 @@ footer {
 @media (max-width: 900px) {
   .certs-grid { grid-template-columns: 1fr; }
   .mw-row { grid-template-columns: 1fr; gap: 4px; }
+  .dag-detail { grid-template-columns: 1fr; gap: 0.9rem; }
   .playbook-banner { grid-template-columns: 1fr; }
   .mw-tag { justify-self: start; }
   nav { padding: 0 1.25rem; }
@@ -677,10 +713,29 @@ footer {
         <circle class="dag-port" cx="805" cy="236" r="3"/>
         <circle class="dag-port" cx="1005" cy="101" r="3"/>
 
+        <!-- data packets flowing through the career pipeline -->
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="0.8s" path="M 170 101 C 188 101, 187 236, 203 236"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="1.5s" path="M 395 236 C 411 236, 409 101, 423 101"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="2.2s" path="M 605 101 C 621 101, 619 236, 633 236"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="2.9s" path="M 805 236 C 821 236, 819 101, 833 101"/>
+        </circle>
+        <circle class="dag-packet" r="2.5">
+          <animateMotion dur="3.5s" repeatCount="indefinite" begin="3.6s" path="M 1005 101 C 1042 101, 1065 122, 1065 168"/>
+        </circle>
+        <circle class="dag-packet green" r="2.5">
+          <animateMotion dur="2s" repeatCount="indefinite" begin="4.3s" path="M 1065 252 L 1065 276"/>
+        </circle>
+
         <!-- 2018 Oracle certification (origin node) -->
         <g class="dag-node" data-key="oracle" tabindex="0" role="button" aria-label="2018, Oracle SQL certified, Mumbai">
           <rect x="20" y="60" width="150" height="82" rx="12"/>
-          <image href="assets/logos/oracle.png" x="132" y="70" width="24" height="24"/>
           <text class="dag-year" x="36" y="84">2018 · ORIGIN</text>
           <text class="dag-org" x="36" y="106">Oracle</text>
           <text class="dag-role" x="36" y="124">SQL · PL/SQL · DBA</text>
@@ -689,7 +744,6 @@ footer {
         <!-- 2019 Teradata -->
         <g class="dag-node" data-key="teradata" tabindex="0" role="button" aria-label="2019 to 2022, Teradata, Mumbai">
           <rect x="205" y="195" width="190" height="82" rx="12"/>
-          <image href="assets/logos/teradata.png" x="357" y="205" width="24" height="24"/>
           <text class="dag-year" x="221" y="219">2019 · MUMBAI</text>
           <text class="dag-org" x="221" y="241">Teradata</text>
           <text class="dag-role" x="221" y="259">Audi · VW · BOI · 2.5TB/day</text>
@@ -698,7 +752,6 @@ footer {
         <!-- 2022 Drexel -->
         <g class="dag-node amber" data-key="drexel" tabindex="0" role="button" aria-label="2022 to 2024, Drexel University, Philadelphia">
           <rect x="425" y="60" width="180" height="82" rx="12"/>
-          <image href="assets/logos/drexel.png" x="567" y="70" width="24" height="24"/>
           <text class="dag-year" x="441" y="84">2022 · BET ON MYSELF</text>
           <text class="dag-org" x="441" y="106">MS Comp Sci</text>
           <text class="dag-role" x="441" y="124">Drexel · Philadelphia</text>
@@ -707,7 +760,6 @@ footer {
         <!-- 2023 Exelon -->
         <g class="dag-node" data-key="exelon" tabindex="0" role="button" aria-label="2023, Exelon">
           <rect x="635" y="195" width="170" height="82" rx="12"/>
-          <image href="assets/logos/exelon.png" x="767" y="205" width="24" height="24"/>
           <text class="dag-year" x="651" y="219">2023 · FORTUNE 100</text>
           <text class="dag-org" x="651" y="241">Exelon</text>
           <text class="dag-role" x="651" y="259">15TB+/day PySpark</text>
@@ -716,7 +768,6 @@ footer {
         <!-- 2024 Cantonica -->
         <g class="dag-node" data-key="cantonica" tabindex="0" role="button" aria-label="2024 to 2025, tech startup">
           <rect x="835" y="60" width="170" height="82" rx="12"/>
-          <image href="assets/logos/cantonica.png" x="967" y="70" width="24" height="24"/>
           <text class="dag-year" x="851" y="84">2024 · STARTUP</text>
           <text class="dag-org" x="851" y="106">Cantonica</text>
           <text class="dag-role" x="851" y="124">owned the whole stack</text>
@@ -725,7 +776,6 @@ footer {
         <!-- 2025 TD Bank -->
         <g class="dag-node" data-key="td" tabindex="0" role="button" aria-label="2025 to 2026, TD Bank">
           <rect x="985" y="170" width="160" height="82" rx="12"/>
-          <image href="assets/logos/tdbank.png" x="1107" y="180" width="24" height="24"/>
           <text class="dag-year" x="1001" y="194">2025 · BANKING</text>
           <text class="dag-org" x="1001" y="216">TD Bank</text>
           <text class="dag-role" x="1001" y="234">AML data pipelines</text>
@@ -743,12 +793,16 @@ footer {
   </div>
 
   <div class="dag-detail" id="dagDetail" aria-live="polite">
-    <div class="dd-head">
-      <div class="dd-org" id="ddOrg">TD Bank</div>
-      <div class="dd-date" id="ddDate">Oct 2025 — Jul 2026 · Philadelphia, PA</div>
+    <img src="assets/profile.jpg" alt="Rohit narrating this chapter" class="dd-avatar">
+    <div class="dd-content">
+      <div class="dd-head">
+        <div class="dd-org" id="ddOrg">TD Bank</div>
+        <div class="dd-date" id="ddDate">Oct 2025 — Jul 2026 · Philadelphia, PA</div>
+      </div>
+      <div class="dd-role" id="ddRole">Data Engineer — AML Transaction Monitoring & Regulatory Reporting</div>
+      <p class="dd-story" id="ddStory"></p>
+      <ul class="dd-bullets" id="ddBullets"></ul>
     </div>
-    <div class="dd-role" id="ddRole">Data Engineer — Financial Data & Regulatory Reporting</div>
-    <ul class="dd-bullets" id="ddBullets"></ul>
   </div>
 </div>
 
@@ -1112,6 +1166,7 @@ footer {
 // ── CAREER DAG DATA ──
 const dagData = {
   oracle: {
+    story: "Where it started - a training room in Mumbai. I learned SQL, PL/SQL, and how databases actually think, and cleared the Oracle certification before I’d written a line of production code.",
     org: "The Origin Node",
     date: "2018 · Mumbai, India",
     role: "Oracle SQL · PL/SQL · DBA — certified 1Z0-071 SQL Associate",
@@ -1124,6 +1179,7 @@ const dagData = {
     ]
   },
   teradata: {
+    story: "My enterprise years. Audi, Volkswagen, Bank of Ireland - 2.5TB a day taught me that performance isn’t a feature, it’s the whole job.",
     org: "Teradata",
     date: "Sep 2019 — Aug 2022 · Mumbai, India",
     role: "Data Engineer · Audi · Volkswagen · Bank of Ireland",
@@ -1137,6 +1193,7 @@ const dagData = {
     ]
   },
   drexel: {
+    story: "Two suitcases and an admit letter. I left a stable role in Mumbai to rebuild my foundations from first principles - the bet that made everything after possible.",
     org: "Drexel University",
     date: "Aug 2022 — Jun 2024 · Philadelphia, PA",
     role: "MS Computer Science — moved to the US with two suitcases and an admit",
@@ -1148,6 +1205,7 @@ const dagData = {
     ]
   },
   exelon: {
+    story: "My first US production role - 15TB+ a day of utility data on Azure Databricks. Cloud scale, real SLAs, and no room for pipelines that only work on good days.",
     org: "Exelon",
     date: "Jun 2023 — Dec 2023 · Wilmington, DE",
     role: "Data Engineer — Advanced Data Analytics",
@@ -1160,6 +1218,7 @@ const dagData = {
     ]
   },
   cantonica: {
+    story: "A startup where I was the data team. Every pipeline, every model, every dashboard - mine to design, mine to own, mine to fix.",
     org: "Cantonica",
     date: "Sep 2024 — Sep 2025 · Philadelphia, PA",
     role: "Data Engineer — owned the entire data stack, solo",
@@ -1172,6 +1231,7 @@ const dagData = {
     ]
   },
   td: {
+    story: "AML transaction monitoring at one of North America’s largest banks - where data engineering meets financial crime prevention, and every number has a regulator reading it.",
     org: "TD Bank (via Protiviti)",
     date: "Oct 2025 — Jul 2026 · Philadelphia, PA",
     role: "Data Engineer — AML Transaction Monitoring & Regulatory Reporting",
@@ -1185,6 +1245,7 @@ const dagData = {
     ]
   },
   next: {
+    story: "The next node is open. If your team needs someone who makes slow queries fast and messy pipelines boring - let’s talk.",
     org: "Your team?",
     date: "2026 — the next node is open",
     role: "Data Engineer · Analytics Engineer · full-time or contract",
@@ -1211,6 +1272,7 @@ function selectNode(key, el) {
   ddOrg.textContent = d.org;
   ddDate.textContent = d.date;
   ddRole.textContent = d.role;
+  document.getElementById('ddStory').textContent = d.story ? '\u201C' + d.story + '\u201D' : '';
   ddBullets.innerHTML = '';
   d.bullets.forEach(b => {
     const li = document.createElement('li');
