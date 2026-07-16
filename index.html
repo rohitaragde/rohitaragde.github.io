@@ -283,12 +283,24 @@ nav {
 .dag-node.open-node .dag-year { fill: var(--green); }
 .dag-org { font-family: var(--sans); font-size: 15px; font-weight: 700; fill: var(--ink); }
 .dag-role { font-family: var(--mono); font-size: 10px; fill: var(--ink3); }
-.dag-edge { fill: none; stroke: rgba(53,208,232,0.45); stroke-width: 1.75; }
+.dag-edge { fill: none; stroke: rgba(53,208,232,0.3); stroke-width: 1.75; transition: stroke 0.2s, stroke-width 0.2s; }
+.dag-edge:not(.open) { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dagDraw 0.7s ease forwards; }
+.dag-edge:not(.open):nth-of-type(2) { animation-delay: 0.15s; }
+.dag-edge:not(.open):nth-of-type(3) { animation-delay: 0.3s; }
+.dag-edge:not(.open):nth-of-type(4) { animation-delay: 0.45s; }
+.dag-edge:not(.open):nth-of-type(5) { animation-delay: 0.6s; }
+@keyframes dagDraw { to { stroke-dashoffset: 0; } }
+.dag-edge.lit { stroke: var(--cyan); stroke-width: 2.5; }
 .dag-edge.open { stroke: rgba(63,214,143,0.6); stroke-dasharray: 5 5; animation: dagFlow 1.2s linear infinite; }
+.dag-edge.open.lit { stroke: var(--green); stroke-width: 2.5; }
 @keyframes dagFlow { to { stroke-dashoffset: -10; } }
-@media (prefers-reduced-motion: reduce) { .dag-edge.open { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .dag-edge.open { animation: none; }
+  .dag-edge:not(.open) { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+}
 .dag-edge-arrow { fill: rgba(53,208,232,0.7); }
 .dag-port { fill: var(--cyan); opacity: 0.55; }
+.dag-node image { pointer-events: none; }
 
 /* ── DAG DETAIL PANEL ── */
 .dag-detail {
@@ -310,6 +322,8 @@ nav {
 .dd-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; }
 .dd-bullets li { font-size: 14px; color: var(--ink2); padding-left: 1.3rem; position: relative; }
 .dd-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-family: var(--mono); font-size: 12px; top: 2px; }
+.dd-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(120,160,200,0.1); }
+.dd-chip { font-family: var(--mono); font-size: 10.5px; color: var(--cyan); border: 1px solid rgba(53,208,232,0.3); background: var(--cyan-glow); border-radius: 4px; padding: 3px 10px; }
 
 /* ── SECTIONS ── */
 section { max-width: 1200px; margin: 0 auto; padding: 5rem 2.5rem; }
@@ -637,7 +651,7 @@ footer {
 
 <!-- ── CAREER DAG ── -->
 <div class="dag-section">
-  <p class="dag-hint">// six years, drawn as a DAG — obviously. <span>click any node</span></p>
+  <p class="dag-hint">// six years, drawn as a DAG — obviously. <span>click any node · hover to trace the flow</span></p>
   <div class="dag-frame">
     <div class="dag-svg-wrap">
       <svg viewBox="0 0 1160 345" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Career timeline drawn as a directed acyclic graph, 2018 to present">
@@ -649,12 +663,12 @@ footer {
         </defs>
 
         <!-- edges: oracle → teradata → drexel → exelon → cantonica → td → open -->
-        <path class="dag-edge" d="M 170 101 C 188 101, 187 236, 203 236" marker-end="url(#arrw)"/>
-        <path class="dag-edge" d="M 395 236 C 411 236, 409 101, 423 101" marker-end="url(#arrw)"/>
-        <path class="dag-edge" d="M 605 101 C 621 101, 619 236, 633 236" marker-end="url(#arrw)"/>
-        <path class="dag-edge" d="M 805 236 C 821 236, 819 101, 833 101" marker-end="url(#arrw)"/>
-        <path class="dag-edge" d="M 1005 101 C 1042 101, 1065 122, 1065 168" marker-end="url(#arrw)"/>
-        <path class="dag-edge open" d="M 1065 252 L 1065 276" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="oracle,teradata" pathLength="1" d="M 170 101 C 188 101, 187 236, 203 236" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="teradata,drexel" pathLength="1" d="M 395 236 C 411 236, 409 101, 423 101" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="drexel,exelon" pathLength="1" d="M 605 101 C 621 101, 619 236, 633 236" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="exelon,cantonica" pathLength="1" d="M 805 236 C 821 236, 819 101, 833 101" marker-end="url(#arrw)"/>
+        <path class="dag-edge" data-link="cantonica,td" pathLength="1" d="M 1005 101 C 1042 101, 1065 122, 1065 168" marker-end="url(#arrw)"/>
+        <path class="dag-edge open" data-link="td,next" d="M 1065 252 L 1065 276" marker-end="url(#arrw)"/>
 
         <!-- connection ports -->
         <circle class="dag-port" cx="170" cy="101" r="3"/>
@@ -666,6 +680,7 @@ footer {
         <!-- 2018 Oracle certification (origin node) -->
         <g class="dag-node" data-key="oracle" tabindex="0" role="button" aria-label="2018, Oracle SQL certified, Mumbai">
           <rect x="20" y="60" width="150" height="82" rx="12"/>
+          <image href="assets/logos/oracle.png" x="132" y="70" width="24" height="24"/>
           <text class="dag-year" x="36" y="84">2018 · ORIGIN</text>
           <text class="dag-org" x="36" y="106">Oracle</text>
           <text class="dag-role" x="36" y="124">SQL · PL/SQL · DBA</text>
@@ -674,6 +689,7 @@ footer {
         <!-- 2019 Teradata -->
         <g class="dag-node" data-key="teradata" tabindex="0" role="button" aria-label="2019 to 2022, Teradata, Mumbai">
           <rect x="205" y="195" width="190" height="82" rx="12"/>
+          <image href="assets/logos/teradata.png" x="357" y="205" width="24" height="24"/>
           <text class="dag-year" x="221" y="219">2019 · MUMBAI</text>
           <text class="dag-org" x="221" y="241">Teradata</text>
           <text class="dag-role" x="221" y="259">Audi · VW · BOI · 2.5TB/day</text>
@@ -682,6 +698,7 @@ footer {
         <!-- 2022 Drexel -->
         <g class="dag-node amber" data-key="drexel" tabindex="0" role="button" aria-label="2022 to 2024, Drexel University, Philadelphia">
           <rect x="425" y="60" width="180" height="82" rx="12"/>
+          <image href="assets/logos/drexel.png" x="567" y="70" width="24" height="24"/>
           <text class="dag-year" x="441" y="84">2022 · BET ON MYSELF</text>
           <text class="dag-org" x="441" y="106">MS Comp Sci</text>
           <text class="dag-role" x="441" y="124">Drexel · Philadelphia</text>
@@ -690,6 +707,7 @@ footer {
         <!-- 2023 Exelon -->
         <g class="dag-node" data-key="exelon" tabindex="0" role="button" aria-label="2023, Exelon">
           <rect x="635" y="195" width="170" height="82" rx="12"/>
+          <image href="assets/logos/exelon.png" x="767" y="205" width="24" height="24"/>
           <text class="dag-year" x="651" y="219">2023 · FORTUNE 100</text>
           <text class="dag-org" x="651" y="241">Exelon</text>
           <text class="dag-role" x="651" y="259">15TB+/day PySpark</text>
@@ -698,6 +716,7 @@ footer {
         <!-- 2024 Cantonica -->
         <g class="dag-node" data-key="cantonica" tabindex="0" role="button" aria-label="2024 to 2025, tech startup">
           <rect x="835" y="60" width="170" height="82" rx="12"/>
+          <image href="assets/logos/cantonica.png" x="967" y="70" width="24" height="24"/>
           <text class="dag-year" x="851" y="84">2024 · STARTUP</text>
           <text class="dag-org" x="851" y="106">Cantonica</text>
           <text class="dag-role" x="851" y="124">owned the whole stack</text>
@@ -706,6 +725,7 @@ footer {
         <!-- 2025 TD Bank -->
         <g class="dag-node" data-key="td" tabindex="0" role="button" aria-label="2025 to 2026, TD Bank">
           <rect x="985" y="170" width="160" height="82" rx="12"/>
+          <image href="assets/logos/tdbank.png" x="1107" y="180" width="24" height="24"/>
           <text class="dag-year" x="1001" y="194">2025 · BANKING</text>
           <text class="dag-org" x="1001" y="216">TD Bank</text>
           <text class="dag-role" x="1001" y="234">AML data pipelines</text>
@@ -1096,6 +1116,7 @@ const dagData = {
     date: "2018 · Mumbai, India",
     role: "Oracle SQL · PL/SQL · DBA — certified 1Z0-071 SQL Associate",
     color: "",
+    stack: ["Oracle SQL", "PL/SQL", "Database Administration"],
     bullets: [
       "Where it started: intensive Oracle training — SQL, PL/SQL, and database administration",
       "Cleared the Oracle SQL 1Z0-071 certification (Aug 2018) before writing a single line of production code",
@@ -1107,6 +1128,7 @@ const dagData = {
     date: "Sep 2019 — Aug 2022 · Mumbai, India",
     role: "Data Engineer · Audi · Volkswagen · Bank of Ireland",
     color: "",
+    stack: ["Teradata Vantage", "Talend", "SQL Server", "Python", "Bash"],
     bullets: [
       "Led SLIPSTREAM — automated ELT pipeline processing 10M+ telecom subscriber records daily, improving revenue forecasting accuracy by 25%",
       "Architected 10+ enterprise ETL/ELT pipelines on Teradata Vantage, Talend, and SQL Server — 2.5TB daily at 95% reliability",
@@ -1119,6 +1141,7 @@ const dagData = {
     date: "Aug 2022 — Jun 2024 · Philadelphia, PA",
     role: "MS Computer Science — moved to the US with two suitcases and an admit",
     color: "amber-b",
+    stack: ["Distributed Systems", "Big Data", "Machine Learning", "Cloud Computing"],
     bullets: [
       "The bet-on-myself node: left a stable role to level up",
       "Deepened fundamentals — algorithms, distributed systems, and the theory behind the tools"
@@ -1129,6 +1152,7 @@ const dagData = {
     date: "Jun 2023 — Dec 2023 · Wilmington, DE",
     role: "Data Engineer — Advanced Data Analytics",
     color: "",
+    stack: ["PySpark", "Azure Databricks", "Delta Lake", "Data Factory", "Synapse"],
     bullets: [
       "PySpark pipelines on Azure Databricks processing 15+ TB daily at 95% SLA reliability",
       "Cut pipeline execution time 30% through bottleneck identification",
@@ -1140,6 +1164,7 @@ const dagData = {
     date: "Sep 2024 — Sep 2025 · Philadelphia, PA",
     role: "Data Engineer — owned the entire data stack, solo",
     color: "",
+    stack: ["Snowflake", "dbt", "GCP", "MongoDB", "REST APIs", "Power BI"],
     bullets: [
       "End-to-end pipelines on Snowflake + dbt — dimensional models cutting data prep time 30%",
       "SQL and schema optimization improving processing performance 25%",
@@ -1151,6 +1176,7 @@ const dagData = {
     date: "Oct 2025 — Jul 2026 · Philadelphia, PA",
     role: "Data Engineer — AML Transaction Monitoring & Regulatory Reporting",
     color: "",
+    stack: ["SQL", "AWS S3 · RDS", "PySpark", "Airflow", "GitHub Actions", "Power BI"],
     bullets: [
       "SQL pipelines integrating 15+ source systems powering AML transaction monitoring and financial crime analytics",
       "Led analytics infrastructure migration to AWS — S3 data lake, RDS, PySpark transformations, Airflow orchestration",
@@ -1163,6 +1189,7 @@ const dagData = {
     date: "2026 — the next node is open",
     role: "Data Engineer · Analytics Engineer · full-time or contract",
     color: "green-b",
+    stack: ["Your stack here"],
     bullets: [
       "Philadelphia, New York, remote, or relocation",
       "Currently building: Slipstream modernization (DuckDB → dbt → Airflow) — see the case study below",
@@ -1190,9 +1217,31 @@ function selectNode(key, el) {
     li.textContent = b;
     ddBullets.appendChild(li);
   });
+  const oldStack = detail.querySelector('.dd-stack');
+  if (oldStack) oldStack.remove();
+  if (d.stack && d.stack.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dd-stack';
+    d.stack.forEach(s => {
+      const chip = document.createElement('span');
+      chip.className = 'dd-chip';
+      chip.textContent = s;
+      wrap.appendChild(chip);
+    });
+    detail.appendChild(wrap);
+  }
   detail.className = 'dag-detail' + (d.color ? ' ' + d.color : '');
   nodes.forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
+}
+
+// lineage highlighting: hovering a node lights its connected edges
+const edges = document.querySelectorAll('.dag-edge');
+function setLineage(key, on) {
+  edges.forEach(e => {
+    const link = (e.dataset.link || '').split(',');
+    if (link.includes(key)) e.classList.toggle('lit', on);
+  });
 }
 
 nodes.forEach(n => {
@@ -1200,6 +1249,10 @@ nodes.forEach(n => {
   n.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(n.dataset.key, n); }
   });
+  n.addEventListener('mouseenter', () => setLineage(n.dataset.key, true));
+  n.addEventListener('mouseleave', () => setLineage(n.dataset.key, false));
+  n.addEventListener('focus', () => setLineage(n.dataset.key, true));
+  n.addEventListener('blur', () => setLineage(n.dataset.key, false));
 });
 
 // default: show current status (TD, most recent completed)
